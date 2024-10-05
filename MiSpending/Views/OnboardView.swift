@@ -11,7 +11,7 @@ import SwiftData
 struct OnboardView: View {
     @Environment(\.modelContext) private var context
     @Query var onboardedUsers: [Onboard]
-
+    
     var body: some View {
         TabView {
             OnboardingView(systemImageName: "dollarsign.arrow.circlepath", title: "Welcome to MiSpending!", description: "Your simple and personal budget financing app.", showButton: false)
