@@ -8,37 +8,51 @@
 import SwiftUI
 
 struct HomeView: View {
-    let expenses: [Expense] = [
-        .init(title: "Groceries", amount: 500.00, date: Date(), category: "Food"),
-        .init(title: "Rent", amount: 1000.00, date: Date(), category: "Bills"),
-        .init(title: "Car Insurance", amount: 150.00, date: Date(), category: "Bills"),
-        .init(title: "Gas", amount: 100.00, date: Date(), category: "Bills"),
-    ]
+    @State var activeTab: Tab = .expenses
     var body: some View {
-        TabView {
-            List {
-                ForEach(expenses, id: \.self) { expense in
-                    Text(expense.title)
-                        .font(.headline)
-                }
+        VStack(spacing: 0) {
+            TabView(selection: $activeTab){
+                ExpensesView().setUpTabBar(.expenses)
+                CameraView().setUpTabBar(.addExpense)
+                ProfileView().setUpTabBar(.profile)
             }
-            .tabItem { VStack {
-                Image(systemName: "list.bullet")
-                Text("Expenses")
-            } }
-            
-            ProfileView()
-                .tabItem {
-                    VStack {
-                        Image(systemName: "person.crop.circle")
-                        Text("My Profile")
-                            .font(.subheadline)
-                    }
-                }
+            CustomBar()
         }
+    }
+    @ViewBuilder
+    func CustomBar() -> some View {
+        HStack(alignment: .center, spacing: 0){
+            ForEach(Tab.allCases, id: \.self) { tab in
+                VStack(spacing: 4){
+                    Image(systemName: tab.rawValue)
+                        .font(.title2)
+                    Text(tab.title)
+                        .font(.caption)
+                        .textScale(.default)
+                }.frame(maxWidth: .infinity)
+                    .foregroundStyle(activeTab == tab ? .primary : Color.gray.opacity(0.8))
+                    .padding(.top, 15)
+                    .padding(.bottom, 10)
+                    .contentShape(.rect)
+                    .onTapGesture {
+                        activeTab = tab
+                    }
+            }
+        }
+        .background(.bar)
     }
 }
 
 #Preview {
     HomeView()
+}
+
+extension View {
+    @ViewBuilder
+    func setUpTabBar(_ tabBar: Tab) -> some View {
+        self
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .tag(tabBar)
+            .toolbar(.hidden, for: .tabBar)
+    }
 }
