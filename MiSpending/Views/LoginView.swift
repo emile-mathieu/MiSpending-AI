@@ -105,7 +105,8 @@ struct LoginView: View {
             }.toolbar{
                 ToolbarItem(placement: .automatic){
                     Button(action: { dismiss() }) {
-                        Image(systemName: "x.circle")
+                        Image(systemName: "xmark.circle.fill")
+                            .resizable()
                             .foregroundColor(.primary)
                             .font(.system(size: 20))
                     }

@@ -8,8 +8,21 @@
 import SwiftUI
 
 struct CameraView: View {
+    
+    private func testOcr() async{
+        try? await ocr(image: UIImage.receiptTest)
+    }
     var body: some View {
-        Text("Camera View")
+        VStack(alignment: .center, spacing: 20) {
+            Text("Camera View")
+            Button("Try Ocr"){
+                Task {
+                    await testOcr()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        
     }
 }
 
