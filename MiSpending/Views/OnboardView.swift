@@ -11,7 +11,11 @@ import SwiftData
 struct OnboardView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.colorScheme) private var scheme
+    
     @Query var onboardedUsers: [Onboard]
+    
+    @State private var showingSheet = false
+    @State private var moveArrow = false
     
     private func handleOnboard() -> Void {
         withAnimation {
@@ -42,15 +46,23 @@ struct OnboardView: View {
                         .frame(maxWidth: geometry.size.width / 2)
                     
                     Button(action: handleOnboard) {
-                        Label("Get Started", systemImage: "arrow.right")
-                            .bold()
-                            .frame(maxWidth: .infinity , maxHeight: 50)
-                            .background(Color.primary)
-                            .foregroundColor(scheme == .light ? .white : .black)
-                            .cornerRadius(25)
-                            .padding(.top, 20)
+                        HStack(alignment: .center) {
+                            Image(systemName: "arrow.right")
+                                .offset(x: moveArrow ? 2.5 : 0) // Animate only the arrow
+                                .animation(Animation.easeInOut(duration: 0.5).repeatForever(autoreverses: true), value: moveArrow)
+                                .onAppear {
+                                    moveArrow.toggle() // Start animation
+                                }
+                            Text("Get Started")
+                        }
+                        .bold()
+                        .frame(maxWidth: .infinity , maxHeight: 50)
+                        .background(Color.primary)
+                        .foregroundStyle(scheme == .light ? .white : .black)
+                        .cornerRadius(25)
+                        .padding(.top, 20)
                     }
-                    NavigationLink(destination: LoginView()) {
+                    Button(action: {showingSheet.toggle()}) {
                         Text("Sign in / Signup")
                             .foregroundStyle(Color.primary)
                             .frame(maxWidth: .infinity , maxHeight: 50)
@@ -58,6 +70,10 @@ struct OnboardView: View {
                                 .stroke(scheme == .dark ? .white : .black, lineWidth:2)
                             )
                     }.padding(.top, 10)
+                        .sheet(isPresented: $showingSheet){
+                            LoginView()
+                        }
+                    
                 }.padding()
             }.frame(maxWidth: .infinity, maxHeight: 360)
         }
