@@ -27,6 +27,7 @@ struct ContentView: View {
                 OnboardView()
             } else {
                 HomeView()
+                    .transition(.move(edge: .trailing))
             }
         }.onAppear {
             if onboardedUsers.isEmpty {

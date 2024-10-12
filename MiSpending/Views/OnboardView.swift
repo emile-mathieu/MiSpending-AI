@@ -10,52 +10,57 @@ import SwiftData
 
 struct OnboardView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.colorScheme) private var scheme
     @Query var onboardedUsers: [Onboard]
     
-    var body: some View {
-        TabView {
-            OnboardingView(systemImageName: "dollarsign.arrow.circlepath", title: "Welcome to MiSpending!", description: "Your simple and personal budget financing app.", showButton: false)
-            OnboardingView(systemImageName: "camera.shutter.button", title: "Scan or Add!", description: "Use your camera to Scan receipts automatically or simply add your spendings manually.", showButton: true, onboardUser: onboardedUsers.first)
-        }.tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
-            .background(.white)
+    private func handleOnboard() -> Void {
+        withAnimation {
+            onboardedUsers.first?.hasOnBoarded = true
+        }
     }
-}
-
-struct OnboardingView: View {
-    let systemImageName: String
-    let title: String
-    let description: String
-    let showButton: Bool
-    var onboardUser: Onboard?
     
     var body: some View {
-        
-        VStack(alignment:.center, spacing: 20) {
-            Image(systemName: systemImageName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
-                .foregroundStyle(.mint)
-            VStack{
-                Text(title)
+        NavigationStack {
+            Spacer()
+            VStack {
+                Image("MiSpending-Logo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(Circle())
+                    .frame(width: 250, height: 250)
+                    .padding()
+                Text("MiSpending")
                     .font(.title)
                     .fontWeight(.bold)
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 25)
-                    .multilineTextAlignment(.center)
             }
-            if showButton {
-                Button("Get Started"){
-                    withAnimation {
-                        onboardUser?.hasOnBoarded = true
+            Spacer()
+            GeometryReader { geometry in
+                VStack(alignment: .leading, spacing: 10){
+                    Text("Get started to manage your finance and spendings now!")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: geometry.size.width / 2)
+                    
+                    Button(action: handleOnboard) {
+                        Label("Get Started", systemImage: "arrow.right")
+                            .bold()
+                            .frame(maxWidth: .infinity , maxHeight: 50)
+                            .background(Color.primary)
+                            .foregroundColor(scheme == .light ? .white : .black)
+                            .cornerRadius(25)
+                            .padding(.top, 20)
                     }
-                }.buttonStyle(.borderedProminent)
-                    .tint(.cyan)
-            }
-        }.padding(.top, 10)
+                    NavigationLink(destination: LoginView()) {
+                        Text("Sign in / Signup")
+                            .foregroundStyle(Color.primary)
+                            .frame(maxWidth: .infinity , maxHeight: 50)
+                            .background(RoundedRectangle(cornerRadius: 5, style: .continuous)
+                                .stroke(scheme == .dark ? .white : .black, lineWidth:2)
+                            )
+                    }.padding(.top, 10)
+                }.padding()
+            }.frame(maxWidth: .infinity, maxHeight: 360)
+        }
     }
 }
 
