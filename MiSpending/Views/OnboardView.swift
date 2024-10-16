@@ -9,17 +9,20 @@ import SwiftUI
 import SwiftData
 
 struct OnboardView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.colorScheme) private var scheme
     
     @Query var onboardedUsers: [Onboard]
+    @Query var User: [User]
     
     @State private var showingSheet = false
+    @State private var showingInfoSheet = false
     @State private var moveArrow = false
     
     private func handleOnboard() -> Void {
-        withAnimation {
-            onboardedUsers.first?.hasOnBoarded = true
+        if User.first?.hasChanges == true {
+            withAnimation {
+                onboardedUsers.first?.hasOnBoarded = true
+            }
         }
     }
     
@@ -45,7 +48,7 @@ struct OnboardView: View {
                         .fontWeight(.bold)
                         .frame(maxWidth: geometry.size.width / 2)
                     
-                    Button(action: handleOnboard) {
+                    Button(action: {showingInfoSheet.toggle(); handleOnboard()}) {
                         HStack(alignment: .center) {
                             Image(systemName: "arrow.right")
                                 .offset(x: moveArrow ? 2.5 : 0) // Animate only the arrow
@@ -62,6 +65,12 @@ struct OnboardView: View {
                         .cornerRadius(25)
                         .padding(.top, 20)
                     }
+                    .floatingButtomSheet(isPresented: $showingInfoSheet, onDismiss: handleOnboard){
+                        UserInfoSheetView()
+                            .presentationDetents([.height(460)])
+                    }
+                    
+                    
                     Button(action: {showingSheet.toggle()}) {
                         Text("Sign in / Signup")
                             .foregroundStyle(Color.primary)
@@ -82,5 +91,5 @@ struct OnboardView: View {
 
 
 #Preview {
-    OnboardView().modelContainer(for: Onboard.self, inMemory: true)
+    OnboardView().modelContainer(for: [Onboard.self, User.self], inMemory: true)
 }
