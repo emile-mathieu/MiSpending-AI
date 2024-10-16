@@ -15,11 +15,10 @@ extension View {
                 .presentationCornerRadius(0)
                 .presentationBackground(.clear)
                 .presentationDragIndicator(.hidden)
-            
         }
         
     }
-        
+    
 }
 
 #Preview {
