@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
-
+import SwiftData
 struct ProfileView: View {
+    @Query var user: [User]
     var body: some View {
         NavigationStack {
             Group {
-                Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+                Text("Hello \(user.first?.name ?? "Unknown")!")
             }.navigationTitle("My Profile")
                 .navigationBarTitleDisplayMode(.automatic)
         }

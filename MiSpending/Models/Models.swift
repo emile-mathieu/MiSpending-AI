@@ -9,6 +9,26 @@ import Foundation
 import SwiftData
 
 @Model
+final class User: Identifiable {
+    @Attribute var id = UUID()
+    @Attribute var name: String
+    @Attribute var email: String?
+    @Attribute var password: String?
+    @Attribute var preferredCurrency: String?
+    @Attribute var preferredColorScheme: String?
+    
+    init(id: UUID = UUID(), name: String, email: String? = nil, password: String? = nil, preferredCurrency: String? = nil, preferredColorScheme: String? = nil) { // Corrected typo
+        self.id = id
+        self.name = name
+        self.email = email
+        self.password = password
+        self.preferredCurrency = preferredCurrency
+        self.preferredColorScheme = preferredColorScheme
+    }
+}
+
+
+@Model
 final class Item {
     var timestamp: Date
     
