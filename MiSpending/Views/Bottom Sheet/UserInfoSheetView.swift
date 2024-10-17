@@ -59,6 +59,7 @@ struct UserInfoSheetView: View {
                 }
                 .pickerStyle(.menu)
                 .padding()
+                .tint(.primary)
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
                 
