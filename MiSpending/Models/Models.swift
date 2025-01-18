@@ -14,26 +14,17 @@ final class User: Identifiable {
     @Attribute var name: String
     @Attribute var email: String?
     @Attribute var password: String?
-    @Attribute var preferredCurrency: String?
+    @Attribute var preferredCurrency: String
     @Attribute var preferredColorScheme: String?
-    
-    init(id: UUID = UUID(), name: String, email: String? = nil, password: String? = nil, preferredCurrency: String? = nil, preferredColorScheme: String? = nil) { // Corrected typo
+    @Relationship var expenses: [Expense] = [] // Establishes a relationship to expenses
+
+    init(id: UUID = UUID(), name: String, email: String? = nil, password: String? = nil, preferredCurrency: String, preferredColorScheme: String? = nil) {
         self.id = id
         self.name = name
         self.email = email
         self.password = password
         self.preferredCurrency = preferredCurrency
         self.preferredColorScheme = preferredColorScheme
-    }
-}
-
-
-@Model
-final class Item {
-    var timestamp: Date
-    
-    init(timestamp: Date) {
-        self.timestamp = timestamp
     }
 }
 
@@ -46,9 +37,18 @@ final class Onboard {
     
 }
 
-struct Expense: Hashable {
-    let title: String
-    let amount: Double
-    let date: Date
-    let category: String
+@Model
+final class Expense: Identifiable {
+    @Attribute var id: UUID = UUID()
+    @Attribute var title: String
+    @Attribute var amount: Double
+    @Attribute var date: Date
+    @Attribute var category: String
+
+    init(title: String, amount: Double, date: Date, category: String) {
+        self.title = title
+        self.amount = amount
+        self.date = date
+        self.category = category
+    }
 }

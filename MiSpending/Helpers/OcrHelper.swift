@@ -15,6 +15,8 @@ func ocr(image: UIImage) async throws {
         let results = try await analysis.analyze(image, configuration: configuration)
         let text = results.transcript
         let lines = text.split(separator: "\n")
+        print(text)
+        print()
         print(lines)
     } catch {
         print("Error: \(error)")
