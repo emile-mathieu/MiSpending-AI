@@ -20,22 +20,27 @@ struct ExpensesView: View {
             ZStack {
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Total Expenses Card
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(Color.white)
-                                .shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
+                                .fill(Color.green.opacity(0.3))
                                 .frame(height: 170)
+                                .shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
                                 .padding(.horizontal)
                             
                             VStack {
                                 Text("Total Expenses")
                                     .font(.headline)
                                     .foregroundColor(.gray)
-                                Text("£ 180")
-                                    .font(.largeTitle)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.black)
+                                HStack {
+                                    Text("£ 180")
+                                        .font(.largeTitle)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.black)
+                                    Image(systemName: "arrowshape.down.circle")
+                                        .resizable()
+                                        .frame(width: 25, height: 25)
+                                        .foregroundStyle(Color.green)
+                                }
                             }
                         }
                         
@@ -61,7 +66,7 @@ struct ExpensesView: View {
                         }
                     }
                     .padding(.vertical)
-                }.background(Color.black.opacity(0.05))
+                }.background(Color(.systemGroupedBackground))
             }
             .navigationTitle("Expenses")
         }
