@@ -10,13 +10,13 @@ struct ExpenseDetailView: View {
     @State private var temporaryDate: Date = Date()
     
     private func loadTemporaryValues() {
-        temporaryName = expense.category_name
+        temporaryName = expense.merchant_name
         temporaryCurrency = expense.currency
         temporaryAmount = expense.total_amount_paid
         temporaryDate = expense.date
     }
     private func saveChanges() {
-        expense.category_name = temporaryName
+        expense.merchant_name = temporaryName
         expense.currency = temporaryCurrency
         expense.total_amount_paid = temporaryAmount
         expense.date = temporaryDate
