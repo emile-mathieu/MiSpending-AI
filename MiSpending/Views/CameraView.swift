@@ -10,7 +10,7 @@ import SwiftUI
 struct CameraView: View {
     
     private func testOcr() async{
-        try? await ocr(image: UIImage.receiptTest)
+        try? await ocr(image: UIImage.receiptTest2)
     }
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
