@@ -16,26 +16,14 @@ struct ProfileView: View {
     private func updateData() {
         guard let user = user.first else { return }
         
-        var shouldSave = false // Flag to track if saving is needed
-        
         if user.name != name {
             user.name = name
-            shouldSave = true
             print("Updated name")
         }
         
         if user.preferredCurrency != preferredCurrency {
             user.preferredCurrency = preferredCurrency
-            shouldSave = true
             print("Updated preferred currency")
-        }
-        
-        if shouldSave {
-            do {
-                try context.save() // Save only once if there are changes
-            } catch {
-                print("Failed to save changes: \(error.localizedDescription)")
-            }
         }
     }
     var body: some View {

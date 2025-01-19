@@ -29,6 +29,6 @@ struct MiSpendingApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(for: [Onboard.self, Expense.self, User.self])
     }
 }

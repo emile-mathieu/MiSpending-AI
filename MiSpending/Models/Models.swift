@@ -16,8 +16,9 @@ final class User: Identifiable {
     @Attribute var password: String?
     @Attribute var preferredCurrency: String
     @Attribute var preferredColorScheme: String?
+    @Attribute var categories: [String] = ["Food & Groceries", "Transport", "Housing & Utilities", "Entertainment", "Health & Fitness"]
     @Relationship var expenses: [Expense] = [] // Establishes a relationship to expenses
-
+    
     init(id: UUID = UUID(), name: String, email: String? = nil, password: String? = nil, preferredCurrency: String, preferredColorScheme: String? = nil) {
         self.id = id
         self.name = name
@@ -40,15 +41,17 @@ final class Onboard {
 @Model
 final class Expense: Identifiable {
     @Attribute var id: UUID = UUID()
-    @Attribute var title: String
-    @Attribute var amount: Double
+    @Attribute var merchant_name: String
+    @Attribute var category_name: String
+    @Attribute var total_amount_paid: Double
+    @Attribute var currency: String
     @Attribute var date: Date
-    @Attribute var category: String
 
-    init(title: String, amount: Double, date: Date, category: String) {
-        self.title = title
-        self.amount = amount
+    init(id: UUID = UUID(), merchant_name: String, category_name: String, total_amount_paid: Double, currency: String, date: Date) {
+        self.merchant_name = merchant_name
+        self.category_name = category_name
+        self.total_amount_paid = total_amount_paid
+        self.currency = currency
         self.date = date
-        self.category = category
     }
 }
