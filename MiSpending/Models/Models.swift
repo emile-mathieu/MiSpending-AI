@@ -17,7 +17,7 @@ final class User: Identifiable {
     @Attribute var preferredCurrency: String
     @Attribute var preferredColorScheme: String?
     @Attribute var categories: [String] = ["Food & Groceries", "Transport", "Housing & Utilities", "Entertainment", "Health & Fitness"]
-    @Relationship var expenses: [Expense] = [] // Establishes a relationship to expenses
+    @Relationship var expenses: [Expense] = []
     
     init(id: UUID = UUID(), name: String, email: String? = nil, password: String? = nil, preferredCurrency: String, preferredColorScheme: String? = nil) {
         self.id = id
