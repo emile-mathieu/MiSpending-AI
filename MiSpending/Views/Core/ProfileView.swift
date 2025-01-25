@@ -8,22 +8,21 @@
 import SwiftUI
 import SwiftData
 struct ProfileView: View {
+    @Environment(\.modelContext) private var context
     @Query var user: [User]
     @State private var name: String = ""
     @State private var preferredCurrency: String = ""
     let currencies = ["GBP", "USD", "EUR"]
-    @Environment(\.modelContext) private var context
+    
     private func updateData() {
         guard let user = user.first else { return }
         
         if user.name != name {
             user.name = name
-            print("Updated name")
         }
         
         if user.preferredCurrency != preferredCurrency {
             user.preferredCurrency = preferredCurrency
-            print("Updated preferred currency")
         }
     }
     var body: some View {
@@ -42,12 +41,10 @@ struct ProfileView: View {
                                 
                             }
                         }
-                        
                     }
                     
                 }
-            }.navigationTitle("Settings")
-                .navigationBarTitleDisplayMode(.automatic)
+            }.navigationTitle("Profile")
         }.onDisappear {
             updateData()
         }
@@ -55,5 +52,8 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView()
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: User.self, configurations: config)
+    container.mainContext.insert(getMockData())
+    return ProfileView().modelContainer(container)
 }

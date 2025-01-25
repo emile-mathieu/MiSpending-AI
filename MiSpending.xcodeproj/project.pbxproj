@@ -24,7 +24,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		FC5E5DB22CB1DDC700CF0E7F /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
+		FC69BF992D4067BE00340EFB /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
 		FC8822AD2CB1CFAC00F7D2D2 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 		FCE662552CBB0B8700FB1D56 /* Helpers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Helpers; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -59,8 +59,8 @@
 		FC3294922C96835F00D9EF4B /* MiSpending */ = {
 			isa = PBXGroup;
 			children = (
+				FC69BF992D4067BE00340EFB /* Views */,
 				FCE662552CBB0B8700FB1D56 /* Helpers */,
-				FC5E5DB22CB1DDC700CF0E7F /* Views */,
 				FC8822AD2CB1CFAC00F7D2D2 /* Models */,
 				FC8822A72C999B1300F7D2D2 /* HomeView.swift */,
 				FC3294932C96835F00D9EF4B /* MiSpendingApp.swift */,
@@ -95,7 +95,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				FC5E5DB22CB1DDC700CF0E7F /* Views */,
+				FC69BF992D4067BE00340EFB /* Views */,
 				FC8822AD2CB1CFAC00F7D2D2 /* Models */,
 				FCE662552CBB0B8700FB1D56 /* Helpers */,
 			);

@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 struct ExpensesView: View {
     @Query var user: [User]
-    
     private func totalExpenses() -> Int {
         let expenses = user.first?.expenses ?? []
         var total: Int = 0
@@ -66,34 +65,25 @@ struct ExpensesView: View {
                         if let user = user.first, !user.expenses.isEmpty {
                             LazyVStack(spacing: 10) {
                                 ForEach(user.expenses, id: \.self) { expense in
-                                    NavigationLink(destination: ExpenseDetailView(expense: expense)) {
+                                    NavigationLink(destination: ExpenseDetailView(user: user, expense: expense)){
                                         expenseRowView(expense: expense)
                                     }
-                                        .padding(.horizontal)
+                                    .padding(.horizontal)
                                 }
                             }
                         }
                     }
                     .padding(.vertical)
                 }.background(Color(.systemGroupedBackground))
-            }
-            .navigationTitle("Expenses")
+            }.navigationTitle("Expenses")
         }
     }
-}
+    }
 
 #Preview {
-    let user: User = .init(name: "Emile", preferredCurrency: "GBP")
-    let mockExpenses = [
-        Expense(merchant_name: "Walmart", category_name: "Groceries", total_amount_paid: 45.50, currency: "USD", date: Date()),
-        Expense(merchant_name: "Landlord", category_name: "Housing", total_amount_paid: 1200.00, currency: "USD", date: Date()),
-        Expense(merchant_name: "Electric Company", category_name: "Utilities", total_amount_paid: 150.75, currency: "USD", date: Date())
-    ]
-
-    user.expenses.insert(contentsOf: mockExpenses, at: 0)
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: User.self, configurations: config)
-    container.mainContext.insert(user)
+    container.mainContext.insert(getMockData())
     return ExpensesView().modelContainer(container)
 }
 
@@ -151,6 +141,9 @@ struct expenseRowView: View {
             Text("£ \(Int(expense.total_amount_paid))")
                 .font(.headline)
                 .foregroundColor(.black)
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.black)
+                
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 10)
