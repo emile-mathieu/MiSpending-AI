@@ -12,6 +12,7 @@ struct HomeView: View {
     @State var activeTab: Tab = .expenses
     @State private var isPopButtonOpen: Bool = false
     @State private var showCameraView: Bool = false
+    @State private var showExpenseSaveView: Bool = false
     var body: some View {
             VStack(spacing: 0) {
                 TabView(selection: $activeTab) {
@@ -23,17 +24,7 @@ struct HomeView: View {
                     if isPopButtonOpen {
                         HStack(spacing: 30) {
                             CameraButtonView(showCameraView: $showCameraView, isPopButtonOpen: $isPopButtonOpen)
-                            Button(action: {
-                                print("Document tapped")
-                            }) {
-                                Image(systemName: "pencil.and.list.clipboard")
-                                    .font(.title2)
-                                    .foregroundColor(.white)
-                                    .frame(width: 50, height: 50)
-                                    .background(Circle().fill(Color.green))
-                                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                            }
-                            .buttonStyle(PlainButtonStyle())
+                            AddExpenseButtonView(showExpenseSaveView: $showExpenseSaveView, isPopButtonOpen: $isPopButtonOpen)
                         }
                         .transition(.scale.combined(with: .opacity))
                         .animation(.easeInOut(duration: 0.1), value: isPopButtonOpen)
@@ -103,7 +94,7 @@ struct CameraButtonView: View {
         Button {
             showCameraView = true
         } label: {
-            Image(systemName: "camera")
+            Image(systemName: "barcode.viewfinder")
                 .font(.title2)
                 .foregroundColor(.white)
                 .frame(width: 50, height: 50)
@@ -114,6 +105,27 @@ struct CameraButtonView: View {
         .buttonStyle(PlainButtonStyle())
         .fullScreenCover(isPresented: $showCameraView, onDismiss: { withAnimation(.easeInOut(duration: 0.2)) {isPopButtonOpen = false}}) {
             CameraView()
+        }
+    }
+}
+
+struct AddExpenseButtonView: View {
+    @Binding var showExpenseSaveView: Bool
+    @Binding var isPopButtonOpen: Bool
+    var body: some View {
+        Button(action: {
+            showExpenseSaveView = true
+        }) {
+            Image(systemName: "pencil.and.list.clipboard")
+                .font(.title2)
+                .foregroundColor(.white)
+                .frame(width: 50, height: 50)
+                .background(Circle().fill(Color.green))
+                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .fullScreenCover(isPresented: $showExpenseSaveView, onDismiss: { withAnimation(.easeInOut(duration: 0.2)) {isPopButtonOpen = false}}) {
+            ExpenseSaveView(expense: .init(merchant_name: "", category_name: "", total_amount_paid: 0.00, currency: "", date: Date()))
         }
     }
 }

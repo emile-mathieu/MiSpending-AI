@@ -8,7 +8,7 @@
 import Foundation
 
 enum Tab: String, CaseIterable {
-    case expenses = "list.bullet"
+    case expenses = "wallet.bifold"
     case search = "magnifyingglass"
     case addExpense = "plus.circle"
     case categories = "chart.pie"
