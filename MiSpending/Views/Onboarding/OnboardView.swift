@@ -67,7 +67,7 @@ struct OnboardView: View {
                     }
                     .floatingButtomSheet(isPresented: $showingInfoSheet, onDismiss: handleOnboard){
                         UserInfoSheetView()
-                            .presentationDetents([.height(460)])
+                            .presentationDetents([.height(580)])
                     }
                     
                     

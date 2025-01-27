@@ -176,5 +176,5 @@ struct CategoryPickerView: View {
 
 #Preview {
     // Add a preview with a mock `Expense` object
-    ExpenseDetailView(user: .init(name: "Test User", preferredCurrency: "GBP"), expense: .init(merchant_name: "Sample", category_name: "Food & Groceries", total_amount_paid: 12.34, currency: "GBP", date: Date()))
+    ExpenseDetailView(user: .init(name: "Test User", budget: 1000, preferredCurrency: "GBP"), expense: .init(merchant_name: "Sample", category_name: "Food & Groceries", total_amount_paid: 12.34, currency: "GBP", date: Date()))
 }

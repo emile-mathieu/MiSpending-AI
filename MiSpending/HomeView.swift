@@ -18,6 +18,7 @@ struct HomeView: View {
                 TabView(selection: $activeTab) {
                     ExpensesView().setUpTabBar(.expenses)
                     ProfileView().setUpTabBar(.profile)
+                    AnalyticsView().setUpTabBar(.categories)
                 }
                 ZStack {
                     CustomBar()
