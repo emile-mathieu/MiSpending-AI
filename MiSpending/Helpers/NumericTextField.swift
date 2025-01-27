@@ -5,6 +5,7 @@ import UIKit
 /// - Shows integer-only keyboard (numberPad)
 /// - Always has a Done button on top (UIToolbar)
 /// - Shows a placeholder (e.g. "e.g 500") when value == 0
+/// - This code is inspired and based on this stackoverflow post. I am referencing in case and even tho, the implementation is diffrent: https://stackoverflow.com/questions/59003612/extend-swiftui-keyboard-with-custom-button
 struct NumericTextField: UIViewRepresentable {
     @Binding var value: Int
     let placeholder: String

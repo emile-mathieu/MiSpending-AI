@@ -17,7 +17,7 @@ struct ExpenseSaveView: View {
     
     @State private var temporaryName: String = ""
     @State private var temporaryCategoryType: String = ""
-    @State private var temporaryCurrency: String = ""
+    @State private var temporaryCurrency: String = "GBP"
     @State private var temporaryAmount: Double = 0.0
     @State private var temporaryDate: Date = Date()
     
@@ -38,18 +38,18 @@ struct ExpenseSaveView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
-
-                VStack(alignment: .leading, spacing: 10) {
-                    transactionNameSection
-                    categorySection
-                    currencyAndAmountSection
-                    transactionDateSection
-                    Spacer()
+                Color(.systemGroupedBackground).ignoresSafeArea()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        transactionNameSection
+                        categorySection
+                        currencyAndAmountSection
+                        transactionDateSection
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 40)
                 }
-                .padding(.horizontal)
-                .padding(.top, 40)
             }
             .navigationTitle("Transaction")
             .navigationBarTitleDisplayMode(.inline)
@@ -97,7 +97,7 @@ struct ExpenseSaveView: View {
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
-            .buttonStyle(PlainButtonStyle()) // Ensures clean tap behavior
+            .buttonStyle(PlainButtonStyle())
         }
         .padding(.vertical, 5)
     }

@@ -12,6 +12,7 @@ struct ExpenseDetailView: View {
     @State private var temporaryDate: Date = Date()
     
     private func loadTemporaryValues() {
+        print("loaded")
         temporaryName = expense.merchant_name
         temporaryCategoryType = expense.category_name
         temporaryCurrency = expense.currency
@@ -20,7 +21,7 @@ struct ExpenseDetailView: View {
     }
     private func saveChanges() {
         expense.merchant_name = temporaryName
-        expense.currency = temporaryCategoryType
+        expense.category_name = temporaryCategoryType
         expense.currency = temporaryCurrency
         expense.total_amount_paid = temporaryAmount
         expense.date = temporaryDate
@@ -29,17 +30,17 @@ struct ExpenseDetailView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
-
-                VStack(alignment: .leading, spacing: 10) {
-                    transactionNameSection
-                    categorySection
-                    currencyAndAmountSection
-                    transactionDateSection
-                    Spacer()
+                Color(.systemGroupedBackground).ignoresSafeArea()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        transactionNameSection
+                        categorySection
+                        currencyAndAmountSection
+                        transactionDateSection
+                        Spacer()
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
             }
             .navigationTitle("Transaction")
             .navigationBarTitleDisplayMode(.inline)
@@ -48,7 +49,11 @@ struct ExpenseDetailView: View {
                     saveButton
                 }
             }
-        }.onAppear(perform: loadTemporaryValues)
+        }.onAppear {
+            if temporaryName.isEmpty {
+                loadTemporaryValues()
+            }
+        }
     }
 
     private var transactionNameSection: some View {

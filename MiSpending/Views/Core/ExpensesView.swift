@@ -88,7 +88,7 @@ struct ExpensesView: View {
 }
 
 
-struct expenseRowView: View {
+private struct expenseRowView: View {
     let expense: Expense
     
     private func getFirstLetter(_ string: String) -> String {
@@ -125,7 +125,9 @@ struct expenseRowView: View {
                 .font(.headline)
                 .foregroundColor(.black)
             Image(systemName: "chevron.right")
-                .foregroundStyle(.black)
+                .resizable()
+                .frame(width: 10, height: 10)
+                .foregroundStyle(.gray)
                 
         }
         .padding(.vertical, 10)
