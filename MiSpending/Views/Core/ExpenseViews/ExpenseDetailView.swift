@@ -12,7 +12,6 @@ struct ExpenseDetailView: View {
     @State private var temporaryDate: Date = Date()
     
     private func loadTemporaryValues() {
-        print("loaded")
         temporaryName = expense.merchant_name
         temporaryCategoryType = expense.category_name
         temporaryCurrency = expense.currency
