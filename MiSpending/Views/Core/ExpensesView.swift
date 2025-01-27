@@ -64,7 +64,7 @@ struct ExpensesView: View {
                         
                         if let user = user.first, !user.expenses.isEmpty {
                             LazyVStack(spacing: 10) {
-                                ForEach(user.expenses, id: \.self) { expense in
+                                ForEach(user.expenses.sorted { $0.date > $1.date }, id: \.self) { expense in
                                     NavigationLink(destination: ExpenseDetailView(user: user, expense: expense)){
                                         expenseRowView(expense: expense)
                                     }
@@ -90,19 +90,6 @@ struct ExpensesView: View {
 
 struct expenseRowView: View {
     let expense: Expense
-    let colors: [Color] = [
-        Color.red.opacity(0.2),
-        Color.blue.opacity(0.2),
-        Color.green.opacity(0.2),
-        Color.orange.opacity(0.2),
-        Color.purple.opacity(0.2),
-        Color.pink.opacity(0.2)
-        ]
-        
-        // Helper function to get a random color
-    private func getRandomColor() -> Color {
-        colors.randomElement() ?? Color.black.opacity(0.12)
-    }
     
     private func getFirstLetter(_ string: String) -> String {
         string.first?.uppercased() ?? ""
@@ -111,7 +98,7 @@ struct expenseRowView: View {
         HStack(alignment: .center) {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(getRandomColor())
+                    .fill(expense.category_color.opacity(0.2))
                     .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 0)
                     .frame(width: 50, height: 50)
                 Text(getFirstLetter(expense.merchant_name))
@@ -119,7 +106,6 @@ struct expenseRowView: View {
                     .foregroundColor(Color.black)
             }
             
-            // Title and Category
             VStack(alignment: .leading, spacing: 5) {
                 Text(expense.merchant_name)
                     .foregroundStyle(Color.primary)
@@ -134,10 +120,7 @@ struct expenseRowView: View {
                         .underline()
                 }
             }
-            
-            Spacer() // Pushes the amount to the far right edge
-            
-            // Amount at the far right
+            Spacer()
             Text("£ \(Int(expense.total_amount_paid))")
                 .font(.headline)
                 .foregroundColor(.black)

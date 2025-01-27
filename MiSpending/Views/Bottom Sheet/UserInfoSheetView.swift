@@ -12,18 +12,19 @@ struct UserInfoSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.colorScheme) private var scheme
     @Environment(\.dismiss) var dismiss
-    
+
     @State var name: String = ""
     @State var preferredCurrency: String = "GBP"
+    @State var budget: Int = 0
     
     let currencies = ["GBP", "USD", "EUR"]
     
     var buttonIsEnabled: Bool {
-        name.isEmpty
+        name.isEmpty || budget == 0
     }
     
     private func saveUserInfo() {
-        let user = User(name: name, preferredCurrency: preferredCurrency)
+        let user = User(name: name, budget: 0, preferredCurrency: preferredCurrency)
         context.insert(user)
         dismiss()
     }
@@ -38,18 +39,24 @@ struct UserInfoSheetView: View {
             Text("User info")
                 .font(.headline)
                 .foregroundStyle(.primary)
-            Text("Please give us your name and what currency you're using.")
+            Text("Please give us your name, monthly budget and what currency you're using.")
                 .multilineTextAlignment(.center)
-                .lineLimit(2)
                 .foregroundStyle(.secondary)
-            
             VStack(alignment: .leading, spacing: 20) {
                 Text("Account Name")
                     .font(.headline)
                 TextField("Enter account name", text: $name)
+                    .keyboardType(.alphabet)
                     .padding()
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(8)
+                    .submitLabel(.next)
+                Text("Monthly Budget")
+                    .font(.headline)
+                NumericTextField(value: $budget, placeholder: "e.g 500")
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(8)
                 Text("Currency")
                     .font(.headline)
                 Picker("Select Currency", selection: $preferredCurrency) {
@@ -62,7 +69,6 @@ struct UserInfoSheetView: View {
                 .tint(.primary)
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
-                
             }
             GeometryReader { geometry in
                 HStack(spacing: 10){
