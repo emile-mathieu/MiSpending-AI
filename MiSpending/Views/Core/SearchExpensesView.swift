@@ -41,7 +41,7 @@ struct SearchExpensesView: View {
                     }
                 }
             }
-            .navigationTitle("Categories")
+            .navigationTitle("Search")
         }
     }
 }

@@ -53,7 +53,7 @@ struct UserInfoSheetView: View {
                     .submitLabel(.next)
                 Text("Monthly Budget")
                     .font(.headline)
-                NumericTextField(value: $budget, placeholder: "e.g 500")
+                NumberTextField(value: $budget, placeholder: "e.g 500", currencyCode: preferredCurrency)
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)

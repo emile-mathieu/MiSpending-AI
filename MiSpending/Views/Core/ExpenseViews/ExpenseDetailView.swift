@@ -1,27 +1,26 @@
 import SwiftUI
 
 struct ExpenseDetailView: View {
-    let currencyList: [String] = ["GBP", "USD", "EUR"]
+
     let user: User
     @Environment(\.dismiss) var dismiss
     @Bindable var expense: Expense
     @State private var temporaryName: String = ""
     @State private var temporaryCategoryType: String = ""
-    @State private var temporaryCurrency: String = ""
     @State private var temporaryAmount: Double = 0.0
     @State private var temporaryDate: Date = Date()
+    
+    @FocusState private var isFocused: Bool
     
     private func loadTemporaryValues() {
         temporaryName = expense.merchant_name
         temporaryCategoryType = expense.category_name
-        temporaryCurrency = expense.currency
         temporaryAmount = expense.total_amount_paid
         temporaryDate = expense.date
     }
     private func saveChanges() {
         expense.merchant_name = temporaryName
         expense.category_name = temporaryCategoryType
-        expense.currency = temporaryCurrency
         expense.total_amount_paid = temporaryAmount
         expense.date = temporaryDate
         dismiss()
@@ -47,6 +46,11 @@ struct ExpenseDetailView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     saveButton
                 }
+                ToolbarItem(placement: .keyboard) {
+                    Button("Done") {
+                        isFocused = false
+                    }
+                }
             }
         }.onAppear {
             if temporaryName.isEmpty {
@@ -65,6 +69,7 @@ struct ExpenseDetailView: View {
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
                 .padding(.bottom, 5)
+                .focused($isFocused)
         }
     }
     
@@ -94,33 +99,18 @@ struct ExpenseDetailView: View {
     }
 
     private var currencyAndAmountSection: some View {
-        Section(header: Text("Currency & Amount")
+        Section(header: Text("Amount")
             .font(.footnote)
             .foregroundStyle(.secondary)) {
-            HStack(spacing: 20) {
-                Picker("Currency", selection: $temporaryCurrency) {
-                    ForEach(currencyList, id: \.self) {
-                        Text($0)
-                    }
-                }
-                .pickerStyle(.menu)
-                .tint(.primary)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 50)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                .frame(maxWidth: .infinity)
-
-                TextField("Amount", value: $temporaryAmount, format: .number)
+                TextField("Amount", value: $temporaryAmount, format: .currency(code: user.preferredCurrency))
                     .keyboardType(.decimalPad)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 20)
                     .background(Color.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
                     .frame(maxWidth: .infinity)
-            }
-            .padding(.bottom, 5)
-        }
+                    .focused($isFocused)
+        }.padding(.bottom, 5)
     }
 
     private var transactionDateSection: some View {
