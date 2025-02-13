@@ -17,7 +17,7 @@ struct UserInfoSheetView: View {
     @State var preferredCurrency: String = "GBP"
     @State var budget: Int = 0
     
-    let currencies = ["GBP", "USD", "EUR"]
+    let currencies: [String] = ["GBP","EUR","USD","SGD","IDR","MYR"]
     
     var buttonIsEnabled: Bool {
         name.isEmpty || budget == 0
