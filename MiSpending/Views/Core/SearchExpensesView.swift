@@ -33,8 +33,8 @@ struct SearchExpensesView: View {
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
                         }
-                        .scrollContentBackground(.hidden)
                         .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
                         .searchable(text: $searchText)
                     } else {
                         Text("No expenses found")
