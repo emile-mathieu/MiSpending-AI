@@ -68,10 +68,10 @@ struct ExpensesView: View {
                         .padding(.horizontal)
                         
                         if let user = user.first, !user.expenses.isEmpty {
-                            LazyVStack(spacing: 10) {
+                            LazyVStack(spacing: 15) {
                                 ForEach(user.expenses.sorted { $0.date > $1.date }, id: \.self) { expense in
                                     NavigationLink(destination: ExpenseDetailView(user: user, expense: expense)){
-                                        expenseRowView(expense: expense)
+                                        expenseRowView(expense: expense, currencySymbol: currencySymbol)
                                     }
                                     .padding(.horizontal)
                                 }
@@ -145,6 +145,7 @@ private struct DisplayAmountView: View {
 
 private struct expenseRowView: View {
     let expense: Expense
+    let currencySymbol: String
     
     private func getFirstLetter(_ string: String) -> String {
         string.first?.uppercased() ?? ""
@@ -176,13 +177,12 @@ private struct expenseRowView: View {
                 }
             }
             Spacer()
-            Text("£ \(Int(expense.total_amount_paid))")
+            Text("\(currencySymbol) \(Int(expense.total_amount_paid))")
                 .font(.headline)
                 .foregroundColor(.black)
-            Image(systemName: "chevron.right")
+            Image("chevron-right")
                 .resizable()
-                .frame(width: 10, height: 10)
-                .foregroundStyle(.gray)
+                .frame(width: 20, height: 20)
                 
         }
         .padding(.vertical, 10)

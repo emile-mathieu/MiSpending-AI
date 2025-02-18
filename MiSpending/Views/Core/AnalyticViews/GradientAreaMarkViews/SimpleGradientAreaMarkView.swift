@@ -73,8 +73,6 @@ struct SimpleGradientAreaMarkView: View {
             }
             .chartXAxis {
                 AxisMarks(values: .automatic(desiredCount: 7)) { value in
-                    AxisGridLine()
-                    AxisTick()
                     if let _ = value.as(Date.self) {
                         // Use the updated initializer without a trailing closure.
                         AxisValueLabel(format: Date.FormatStyle().month(.abbreviated).day())
