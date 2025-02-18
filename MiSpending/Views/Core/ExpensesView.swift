@@ -9,6 +9,25 @@ import SwiftUI
 import SwiftData
 struct ExpensesView: View {
     @Query var user: [User]
+    
+    var currencySymbol: String {
+        switch user.first?.preferredCurrency {
+        case "GBP":
+            return "£"
+        case "EUR":
+            return "€"
+        case "USD":
+            return "$"
+        case "SGD":
+            return "S$"
+        case "IDR":
+            return "Rp"
+        case "MYR":
+            return "RM"
+        default:
+            return "?"
+        }
+    }
     private func totalExpenses() -> Int {
         let expenses = user.first?.expenses ?? []
         var total: Int = 0
@@ -25,30 +44,16 @@ struct ExpensesView: View {
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(LinearGradient(
-                                    gradient: Gradient(colors: [Color.green.opacity(0.8), Color.green.opacity(0.6)]),
+                                    gradient: Gradient(colors: [Color.green.opacity(0.9), Color.green.opacity(0.7)]),
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 ))
-                                .frame(height: 170)
-                                .shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
+                                .frame(height: 180)
                                 .padding(.horizontal)
                             
-                            VStack {
-                                Text("Total Expenses")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                HStack {
-                                    Text("£ \(totalExpenses())")
-                                        .font(.largeTitle)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                    Image(systemName: "arrowshape.down.circle")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundStyle(Color.white)
-                                }
-                            }
-                        }
+                            DisplayAmountView(budget: user.first!.budget, totalExpenses: totalExpenses(), localCurrency: currencySymbol)
+                            
+                        }.shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
                         
                         // Transaction History Section
                         VStack(alignment: .leading, spacing: 10) {
@@ -88,7 +93,57 @@ struct ExpensesView: View {
 }
 
 
-struct expenseRowView: View {
+private struct DisplayAmountView: View {
+    let budget: Int
+    let totalExpenses: Int
+    let localCurrency: String
+    
+    var progress: Double {
+        return Double(totalExpenses) / Double(budget)
+    }
+    var currencySymbol: String {
+        return localCurrency.first!.uppercased()
+    }
+    var body: some View {
+        VStack(spacing: 8) {
+            Text("Budget Limit")
+                .font(.headline)
+                .foregroundColor(.white)
+            
+            Text("\(localCurrency)\(budget)")
+                .font(.title3.bold())
+                .foregroundColor(.white)
+            
+            HStack(spacing: 5) {
+                Text("Total Expenses")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                Spacer()
+                Image(systemName: "arrow.down.circle.fill")
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .foregroundColor(.white)
+            }
+            
+            Text("\(localCurrency)\(totalExpenses)")
+                .font(.largeTitle.bold())
+                .foregroundColor(.white)
+            
+            ProgressView(value: progress)
+                .progressViewStyle(LinearProgressViewStyle())
+                .tint(.white)
+                .frame(height: 4)
+                .cornerRadius(2)
+                .padding(.top, 5)
+        }
+        .frame(maxWidth: .infinity, minHeight: 150)
+        .padding(.horizontal, 24)
+    }
+}
+
+
+
+private struct expenseRowView: View {
     let expense: Expense
     
     private func getFirstLetter(_ string: String) -> String {
@@ -125,7 +180,9 @@ struct expenseRowView: View {
                 .font(.headline)
                 .foregroundColor(.black)
             Image(systemName: "chevron.right")
-                .foregroundStyle(.black)
+                .resizable()
+                .frame(width: 10, height: 10)
+                .foregroundStyle(.gray)
                 
         }
         .padding(.vertical, 10)

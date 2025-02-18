@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 func getMockData() -> User {
-    let user: User = .init(name: "Emile", budget: 3000, preferredCurrency: "GBP")
+    let user: User = .init(name: "Emile", budget: 1000, preferredCurrency: "GBP")
     let calendar = Calendar.current
     let today = Date()
 

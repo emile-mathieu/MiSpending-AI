@@ -21,12 +21,12 @@ struct ExpenseSaveView: View {
     @State private var temporaryAmount: Double = 0.0
     @State private var temporaryDate: Date = Date()
     
-    let currencyList: [String] = ["GBP", "USD", "EUR"]
+    @FocusState private var isFocused: Bool
     
     private func loadTemporaryValues() {
         temporaryName = expense.merchant_name
         temporaryCategoryType = expense.category_name
-        temporaryCurrency = expense.currency
+        temporaryCurrency = user.first!.preferredCurrency
         temporaryAmount = expense.total_amount_paid
         temporaryDate = expense.date
     }
@@ -38,18 +38,18 @@ struct ExpenseSaveView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
-
-                VStack(alignment: .leading, spacing: 10) {
-                    transactionNameSection
-                    categorySection
-                    currencyAndAmountSection
-                    transactionDateSection
-                    Spacer()
+                Color(.systemGroupedBackground).ignoresSafeArea()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
+                        transactionNameSection
+                        categorySection
+                        currencyAndAmountSection
+                        transactionDateSection
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 40)
                 }
-                .padding(.horizontal)
-                .padding(.top, 40)
             }
             .navigationTitle("Transaction")
             .navigationBarTitleDisplayMode(.inline)
@@ -73,8 +73,8 @@ struct ExpenseSaveView: View {
                 .padding(.horizontal, 20)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                .padding(.bottom, 5)
-            }
+                
+            }.padding(.bottom, 5)
     }
     
     private var categorySection: some View {
@@ -97,39 +97,24 @@ struct ExpenseSaveView: View {
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
-            .buttonStyle(PlainButtonStyle()) // Ensures clean tap behavior
+            .buttonStyle(PlainButtonStyle())
         }
         .padding(.vertical, 5)
     }
 
     private var currencyAndAmountSection: some View {
-        Section(header: Text("Currency & Amount")
+        Section(header: Text("Amount")
             .font(.footnote)
             .foregroundStyle(.secondary)) {
-            HStack(spacing: 20) {
-                Picker("Currency", selection: $temporaryCurrency) {
-                    ForEach(currencyList, id: \.self) {
-                        Text($0)
-                    }
-                }
-                .pickerStyle(.menu)
-                .tint(.primary)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 50)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                .frame(maxWidth: .infinity)
-
-                TextField("Amount", value: $temporaryAmount, format: .number)
+                NumberTextField(value: $temporaryAmount, placeholder: "Eg. \(temporaryCurrency)100", currencyCode: temporaryCurrency)
                     .keyboardType(.decimalPad)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 20)
                     .background(Color.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
                     .frame(maxWidth: .infinity)
-            }
-            .padding(.bottom, 5)
-        }
+
+        }.padding(.bottom, 5)
     }
 
     private var transactionDateSection: some View {

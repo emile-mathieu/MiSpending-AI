@@ -17,7 +17,7 @@ struct UserInfoSheetView: View {
     @State var preferredCurrency: String = "GBP"
     @State var budget: Int = 0
     
-    let currencies = ["GBP", "USD", "EUR"]
+    let currencies: [String] = ["GBP","EUR","USD","SGD","IDR","MYR"]
     
     var buttonIsEnabled: Bool {
         name.isEmpty || budget == 0
@@ -53,7 +53,7 @@ struct UserInfoSheetView: View {
                     .submitLabel(.next)
                 Text("Monthly Budget")
                     .font(.headline)
-                NumericTextField(value: $budget, placeholder: "e.g 500")
+                NumberTextField(value: $budget, placeholder: "e.g 500", currencyCode: preferredCurrency)
                 .padding()
                 .background(Color(.secondarySystemBackground))
                 .cornerRadius(8)
