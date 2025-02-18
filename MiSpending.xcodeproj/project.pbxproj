@@ -293,7 +293,6 @@
 				DEVELOPMENT_TEAM = CY568CTBY2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MiSpending/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MiSpending;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -329,7 +328,6 @@
 				DEVELOPMENT_TEAM = CY568CTBY2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MiSpending/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MiSpending;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
