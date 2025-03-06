@@ -127,7 +127,7 @@ struct AddExpenseButtonView: View {
         }
         .buttonStyle(PlainButtonStyle())
         .fullScreenCover(isPresented: $showExpenseSaveView, onDismiss: { withAnimation(.easeInOut(duration: 0.2)) {isPopButtonOpen = false}}) {
-            ExpenseSaveView(expense: .init(merchant_name: "", category_name: "", total_amount_paid: 0.00, currency: "", date: Date()))
+            ExpenseSaveView()
         }
     }
 }

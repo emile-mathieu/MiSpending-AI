@@ -1,17 +1,18 @@
 //
-//  ExpenseSaveView.swift
+//  ExpenseCameraView.swift
 //  MiSpending
 //
-//  Created by Emile Mathieu on 22/01/2025.
+//  Created by Emile Mathieu on 06/03/2025.
 //
 
 import SwiftUI
 import SwiftData
-struct ExpenseSaveView: View {
-
+struct ExpenseCameraView: View {
     @Environment(\.dismiss) var dismiss
-    
     @Query var user: [User]
+    
+    let imageTaken: UIImage
+    
     
     @State private var temporaryName: String = ""
     @State private var temporaryCategoryType: String = ""
@@ -20,6 +21,10 @@ struct ExpenseSaveView: View {
     @State private var temporaryDate: Date = Date()
     
     @FocusState private var isFocused: Bool
+    
+    //    private func scan() async{
+    //            try? await ocr(image: imageTaken)
+    //        }
     
     private func saveChanges() {
         let newExpense: Expense = .init(merchant_name: temporaryName, category_name: temporaryCategoryType, total_amount_paid: temporaryAmount, currency: temporaryCurrency, date: temporaryDate)
@@ -135,19 +140,16 @@ struct ExpenseSaveView: View {
         Button(action: {
             dismiss()
         }) {
-            Text("Cancel")
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background(RoundedRectangle(cornerRadius: 12).fill(.red))
+            Image(systemName: "chevron.left")
+                .foregroundColor(.gray)
         }
     }
 }
 
 #Preview {
+    let testImage = UIImage(named: "receipt-test")
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: User.self, configurations: config)
     container.mainContext.insert(getMockData())
-    return ExpenseSaveView().modelContainer(container)
+    return ExpenseCameraView(imageTaken: testImage!).modelContainer(container)
 }
