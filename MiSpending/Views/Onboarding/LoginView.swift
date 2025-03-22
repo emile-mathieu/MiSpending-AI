@@ -107,7 +107,7 @@ struct LoginView: View {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark.circle.fill")
                             .resizable()
-                            .foregroundColor(.primary)
+                            .foregroundStyle(.black)
                             .font(.system(size: 20))
                     }
                 }

@@ -1,7 +1,12 @@
 .DS_Store
 
+# Ignore CoreML encrypted model keys
+*.mlmodelkey
+
+# Ignore compiled CoreML models
+*.mlmodelc
+
 # Xcode
-#
 build/
 *.pbxuser
 !default.pbxuser
