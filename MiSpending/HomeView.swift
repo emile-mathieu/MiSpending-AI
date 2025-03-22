@@ -106,7 +106,7 @@ struct CameraButtonView: View {
         
         .buttonStyle(PlainButtonStyle())
         .fullScreenCover(isPresented: $showCameraView, onDismiss: { withAnimation(.easeInOut(duration: 0.2)) {isPopButtonOpen = false}}) {
-            CameraView()
+            CameraView(isSheetPresented: $showCameraView)
         }
     }
 }

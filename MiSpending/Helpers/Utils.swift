@@ -15,15 +15,15 @@ func getMockData() -> User {
 
     let mockExpenses = [
         Expense(merchant_name: "Walmart", category_name: "Food & Groceries",
-                total_amount_paid: 85.50, currency: "USD", date: today),
+                total_amount_paid: 85.50, currency: "GBP", date: today),
         Expense(merchant_name: "Landlord", category_name: "Housing & Utilities",
-                total_amount_paid: 460.00, currency: "USD", date: calendar.date(byAdding: .day, value: -3, to: today)!),
+                total_amount_paid: 460.00, currency: "GBP", date: calendar.date(byAdding: .day, value: -3, to: today)!),
         Expense(merchant_name: "Electric Company", category_name: "Transport",
-                total_amount_paid: 150.75, currency: "USD", date: calendar.date(byAdding: .day, value: -7, to: today)!),
+                total_amount_paid: 150.75, currency: "GBP", date: calendar.date(byAdding: .day, value: -7, to: today)!),
         Expense(merchant_name: "Co-op", category_name: "Housing & Utilities",
-                total_amount_paid: 100.00, currency: "USD", date: calendar.date(byAdding: .day, value: -10, to: today)!),
+                total_amount_paid: 100.00, currency: "GBP", date: calendar.date(byAdding: .day, value: -10, to: today)!),
         Expense(merchant_name: "Nintendo", category_name: "Entertainment",
-                total_amount_paid: 75.00, currency: "USD", date: calendar.date(byAdding: .day, value: -15, to: today)!)
+                total_amount_paid: 75.00, currency: "GBP", date: calendar.date(byAdding: .day, value: -15, to: today)!)
     ]
     
     user.expenses.insert(contentsOf: mockExpenses, at: 0)

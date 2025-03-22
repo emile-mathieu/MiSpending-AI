@@ -20,7 +20,6 @@ func checkImageHelper(image: UIImage) async throws -> String {
         return prediction.target
     }
     catch {
-        print("Error: \(error)")
         return ""
     }
     

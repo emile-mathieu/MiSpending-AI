@@ -102,8 +102,8 @@ class CameraModel: NSObject, ObservableObject {
     }
 }
 
-// MARK: - AVCapturePhotoCaptureDelegate Implementation
-// Apple Reference: https://developer.apple.com/documentation/avfoundation/avcapturephotocapturerecord
+/// AVCapturePhotoCaptureDelegate Implementation
+/// Apple Reference: https://developer.apple.com/documentation/avfoundation/avcapturephotocapturerecord
 
 extension CameraModel: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {

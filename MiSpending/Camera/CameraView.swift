@@ -16,7 +16,9 @@ struct CameraView: View {
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var selectedImage: UIImage? = nil
     @State private var capturedImage: UIImage? = nil
+    @State private var showExpenseCameraView = false
     @StateObject private var cameraModel = CameraModel()
+    @Binding var isSheetPresented: Bool
     
     @Environment(\.dismiss) private var dismiss
     
@@ -24,7 +26,7 @@ struct CameraView: View {
         NavigationStack {
             VStack {
                 VStack(alignment: .center) {
-                    Text("No Receipt Detected")
+                    Text("Please Add or Scan a Receipt")
                         .font(.headline)
                         .foregroundStyle(.black)
                     
@@ -32,7 +34,6 @@ struct CameraView: View {
                 // Child 1: Camera Preview Container
                 CameraPreviewContainer(cameraModel: cameraModel)
                     .aspectRatio(3/4, contentMode: .fill)
-                    .background(Color.blue)
                 
                 // Child 2: Camera Controls (buttons, overlays, etc.)
                 VStack {
@@ -53,20 +54,31 @@ struct CameraView: View {
                             Task {
                                 if let data = try? await newItem?.loadTransferable(type: Data.self),
                                    let uiImage = UIImage(data: data) {
-                                    selectedImage = uiImage
+                                    
                                     let result = try? await checkImageHelper(image: uiImage)
-                                    print(result!)
+                                    if result == "Receipt"{
+                                        selectedImage = uiImage
+                                        showExpenseCameraView = true
+                                    }
                                 }
+                            }
+                        }
+                        .navigationDestination(isPresented: $showExpenseCameraView) {
+                            if let selectedImage {
+                                ExpenseCameraView(
+                                    imageTaken: selectedImage,
+                                    isSheetPresented: $isSheetPresented
+                                )
+                            } else {
+                                Text("Not a Receipt!")
                             }
                         }
                         
                         
                         Spacer()
-                        Button(action: {
-//                            cameraModel.capturePhoto()
-                            let testImage = UIImage(named: "receipt-test")
-                            
-                        }) {
+                        Button {
+                            cameraModel.capturePhoto()
+                        } label: {
                             Image(systemName: "camera.circle.fill")
                                 .resizable()
                                 .frame(width: 70, height: 70)
@@ -80,18 +92,34 @@ struct CameraView: View {
                 }.padding(.top, 20)
             }
             .onAppear {
-                // Configure camera only once when this view appears
-                //            cameraModel.configure()
+               // Configure camera only once when this view appears
+               // Comment to not crash the view
+                cameraModel.configure()
             }
             .alert(isPresented: $cameraModel.showAlert) {
                 Alert(title: Text("Camera Error"),
                       message: Text(cameraModel.alertMessage),
-                      dismissButton: .default(Text("OK")))
+                      dismissButton: .default(Text("OK"), action: {dismiss()}))
+                
             }
             .onChange(of: cameraModel.capturedImage) { _, newImage in
-                if let newImage = newImage {
-                    capturedImage = newImage
-                    dismiss()
+                Task {
+                    guard let newImage = newImage else { return }
+                    let result = try? await checkImageHelper(image: newImage)
+                    if result == "Receipt" {
+                        capturedImage = newImage
+                        showExpenseCameraView = true
+                    }
+                }
+            }
+            .navigationDestination(isPresented: $showExpenseCameraView) {
+                if let capturedImage {
+                    ExpenseCameraView(
+                        imageTaken: capturedImage,
+                        isSheetPresented: $isSheetPresented
+                    )
+                } else {
+                    Text("Not a Receipt!")
                 }
             }
             .background(Color.white)
@@ -110,5 +138,7 @@ struct CameraView: View {
 }
 
 #Preview{
-    CameraView()
+//    Disabled in preview because it breaks since it's trying to enable the camera
+//    @Previewable @State var showPreview: Bool = true
+//    CameraView(isSheetPresented: $showPreview)
 }

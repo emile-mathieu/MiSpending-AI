@@ -55,7 +55,6 @@ struct ExpensesView: View {
                             
                         }.shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
                         
-                        // Transaction History Section
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Transaction History")
                                 .font(.title3)
@@ -84,13 +83,6 @@ struct ExpensesView: View {
         }
     }
     }
-
-#Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: User.self, configurations: config)
-    container.mainContext.insert(getMockData())
-    return ExpensesView().modelContainer(container)
-}
 
 
 private struct DisplayAmountView: View {
@@ -150,6 +142,24 @@ private struct expenseRowView: View {
     private func getFirstLetter(_ string: String) -> String {
         string.first?.uppercased() ?? ""
     }
+    private func getCurrencySymbol(for currencyCode: String) -> String {
+        switch currencyCode {
+        case "GBP":
+            return "£"
+        case "EUR":
+            return "€"
+        case "USD":
+            return "$"
+        case "SGD":
+            return "S$"
+        case "IDR":
+            return "Rp"
+        case "MYR":
+            return "RM"
+        default:
+            return ""
+        }
+    }
     var body: some View {
         HStack(alignment: .center) {
             ZStack {
@@ -177,7 +187,7 @@ private struct expenseRowView: View {
                 }
             }
             Spacer()
-            Text("\(currencySymbol) \(Int(expense.total_amount_paid))")
+            Text(getCurrencySymbol(for: expense.currency) + String(Int(expense.total_amount_paid)))
                 .font(.headline)
                 .foregroundColor(.black)
             Image("chevron-right")
@@ -190,4 +200,10 @@ private struct expenseRowView: View {
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
+}
+#Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: User.self, configurations: config)
+    container.mainContext.insert(getMockData())
+    return ExpensesView().modelContainer(container)
 }
