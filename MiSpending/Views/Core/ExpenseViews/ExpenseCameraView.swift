@@ -21,7 +21,7 @@ struct ExpenseCameraView: View {
     @State private var temporaryDate: Date = Date()
     @Binding var isSheetPresented: Bool
     
-    @FocusState private var isFocused: Bool
+    @FocusState private var isInputActive: Bool
     
     private func saveChanges() {
         let newExpense: Expense = .init(merchant_name: temporaryName, category_name: temporaryCategoryType, total_amount_paid: temporaryAmount, currency: temporaryCurrency, date: temporaryDate)
@@ -84,66 +84,45 @@ struct ExpenseCameraView: View {
     }
 
     private var transactionNameSection: some View {
-        Section(header: Text("Transaction Name")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
+        Section(header: Text("Transaction")) {
             TextField("Name", text: $temporaryName)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 20)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                
-            }.padding(.bottom, 5)
+        }
     }
     
     private var categorySection: some View {
-        VStack(alignment: .leading) {
-            Text("Category Type")
-                .font(.footnote)
-                .foregroundColor(.secondary)
-            
+        Section(header: Text("Category")) {
             NavigationLink(destination: CategoryPickerView(selectedCategory: $temporaryCategoryType, categories: user.first!.categories)) {
                 HStack {
-                    Text("Category")
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Text(temporaryCategoryType)
-                        .foregroundColor(.secondary)
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.secondary)
+                    Text(temporaryCategoryType.isEmpty ? "Category" : temporaryCategoryType)
                 }
-                .padding()
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
-            .buttonStyle(PlainButtonStyle())
         }
-        .padding(.vertical, 5)
     }
     private var currencyAndAmountSection: some View {
-        Section(header: Text("Amount")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
-                TextField("Amount", value: $temporaryAmount, format: .currency(code: user.first!.preferredCurrency))
-                    .keyboardType(.decimalPad)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 20)
-                    .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                    .frame(maxWidth: .infinity)
-                    .focused($isFocused)
-        }.padding(.bottom, 5)
-    }
-
-    private var transactionDateSection: some View {
-        Section(header: Text("Transaction Date")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
-            DatePicker("Start Date", selection: $temporaryDate, displayedComponents: [.date])
-                .datePickerStyle(.graphical)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
+        Section(header: Text("Amount")) {
+            TextField("Amount", value: $temporaryAmount, format: .currency(code: user.first!.preferredCurrency))
+                .keyboardType(.decimalPad)
+                .focused($isInputActive)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button(action: {
+                            isInputActive = false
+                        }) {
+                            Image(systemName: "keyboard.chevron.compact.down")
+                                .foregroundStyle(.black)
+                        }
+                    }
+                }
+            
         }
+    }
+    
+    private var transactionDateSection: some View {
+        Section(header: Text("Transaction Date")){
+                DatePicker("Start Date", selection: $temporaryDate, displayedComponents: [.date])
+                    .datePickerStyle(.graphical)
+            }
     }
 
     private var saveButton: some View {
@@ -170,10 +149,11 @@ struct ExpenseCameraView: View {
 }
 
 #Preview {
-    @Previewable @State var showPreview: Bool = false
-    let testImage = UIImage(named: "receipt-test")
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: User.self, configurations: config)
-    container.mainContext.insert(getMockData())
-    return ExpenseCameraView(imageTaken: testImage!, isSheetPresented: $showPreview).modelContainer(container)
+//    Uncomment to test but it will break because of API call
+//    @Previewable @State var showPreview: Bool = false
+//    let testImage = UIImage(named: "receipt-test")
+//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+//    let container = try! ModelContainer(for: User.self, configurations: config)
+//    container.mainContext.insert(getMockData())
+//    return ExpenseCameraView(imageTaken: testImage!, isSheetPresented: $showPreview).modelContainer(container)
 }

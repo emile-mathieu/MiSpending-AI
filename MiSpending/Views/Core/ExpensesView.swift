@@ -10,6 +10,13 @@ import SwiftData
 struct ExpensesView: View {
     @Query var user: [User]
     
+    var gradient: Gradient {
+        if totalExpenses <= user.first!.budget {
+            return Gradient(colors: [Color.green.opacity(0.9), Color.green.opacity(0.7)])
+        } else {
+                return Gradient(colors: [Color.red.opacity(0.9), Color.red.opacity(0.7)])
+        }
+    }
     var currencySymbol: String {
         switch user.first?.preferredCurrency {
         case "GBP":
@@ -28,7 +35,21 @@ struct ExpensesView: View {
             return "?"
         }
     }
-    private func totalExpenses() -> Int {
+    var dateRange: String {
+        let calendar = Calendar.current
+        guard let monthInterval = calendar.dateInterval(of: .month, for: Date()),
+              let lastDay = calendar.date(byAdding: .day, value: -1, to: monthInterval.end) else {
+            return "Unknown Date"
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy"
+        
+        let startDate = formatter.string(from: monthInterval.start)
+        let endDate = formatter.string(from: lastDay)
+        return "\(startDate) - \(endDate)"
+    }
+    private var totalExpenses: Int {
         let expenses = user.first?.expenses ?? []
         var total: Int = 0
         for expense in expenses {
@@ -44,14 +65,14 @@ struct ExpensesView: View {
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(LinearGradient(
-                                    gradient: Gradient(colors: [Color.green.opacity(0.9), Color.green.opacity(0.7)]),
+                                    gradient: gradient,
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 ))
                                 .frame(height: 180)
                                 .padding(.horizontal)
                             
-                            DisplayAmountView(budget: user.first!.budget, totalExpenses: totalExpenses(), localCurrency: currencySymbol)
+                            DisplayAmountView(budget: user.first!.budget, totalExpenses: totalExpenses, localCurrency: currencySymbol)
                             
                         }.shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
                         
@@ -59,7 +80,7 @@ struct ExpensesView: View {
                             Text("Transaction History")
                                 .font(.title3)
                                 .fontWeight(.semibold)
-                            Text("01 Jan 2025 - 31 Jan 2025")
+                            Text(dateRange)
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
@@ -82,16 +103,19 @@ struct ExpensesView: View {
             }.navigationTitle("Expenses")
         }
     }
-    }
+}
 
 
 private struct DisplayAmountView: View {
     let budget: Int
     let totalExpenses: Int
     let localCurrency: String
-    
     var progress: Double {
-        return Double(totalExpenses) / Double(budget)
+        if (totalExpenses <= budget) {
+            return Double(totalExpenses) / Double(budget)
+        } else {
+            return 1.0
+        }
     }
     var currencySymbol: String {
         return localCurrency.first!.uppercased()
@@ -120,13 +144,13 @@ private struct DisplayAmountView: View {
             Text("\(localCurrency)\(totalExpenses)")
                 .font(.largeTitle.bold())
                 .foregroundColor(.white)
-            
             ProgressView(value: progress)
-                .progressViewStyle(LinearProgressViewStyle())
+                .progressViewStyle(.linear)
                 .tint(.white)
                 .frame(height: 4)
                 .cornerRadius(2)
                 .padding(.top, 5)
+                .animation(.easeInOut(duration: 2), value: progress)
         }
         .frame(maxWidth: .infinity, minHeight: 150)
         .padding(.horizontal, 24)
@@ -193,7 +217,6 @@ private struct expenseRowView: View {
             Image("chevron-right")
                 .resizable()
                 .frame(width: 20, height: 20)
-                
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 10)
