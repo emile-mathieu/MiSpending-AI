@@ -13,6 +13,7 @@ struct HomeView: View {
     @State private var isPopButtonOpen: Bool = false
     @State private var showCameraView: Bool = false
     @State private var showExpenseSaveView: Bool = false
+    @Environment(TabBar.self) private var tabBar
     var body: some View {
             VStack(spacing: 0) {
                 TabView(selection: $activeTab) {
@@ -21,20 +22,22 @@ struct HomeView: View {
                     AnalyticsView().setUpTabBar(.categories)
                     ProfileView().setUpTabBar(.profile)
                 }
-                ZStack {
-                    CustomBar()
-                    if isPopButtonOpen {
-                        HStack(spacing: 30) {
-                            CameraButtonView(showCameraView: $showCameraView, isPopButtonOpen: $isPopButtonOpen)
-                            AddExpenseButtonView(showExpenseSaveView: $showExpenseSaveView, isPopButtonOpen: $isPopButtonOpen)
+                if tabBar.showTabBar {
+                    ZStack {
+                        CustomBar()
+                        if isPopButtonOpen {
+                            HStack(spacing: 30) {
+                                CameraButtonView(showCameraView: $showCameraView, isPopButtonOpen: $isPopButtonOpen)
+                                AddExpenseButtonView(showExpenseSaveView: $showExpenseSaveView, isPopButtonOpen: $isPopButtonOpen)
+                            }
+                            .transition(.scale.combined(with: .opacity))
+                            .animation(.easeInOut(duration: 0.1), value: isPopButtonOpen)
+                            .offset(y: isPopButtonOpen ? -50 : 0)
                         }
-                        .transition(.scale.combined(with: .opacity))
-                        .animation(.easeInOut(duration: 0.1), value: isPopButtonOpen)
-                        .offset(y: isPopButtonOpen ? -50 : 0)
-                    }
+                    }.transition(.move(edge: .bottom).combined(with: .opacity))
+                }
             }
         }
-    }
     
     @ViewBuilder
     func CustomBar() -> some View {
@@ -146,5 +149,5 @@ extension View {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: User.self, configurations: config)
     container.mainContext.insert(getMockData())
-    return HomeView().modelContainer(container)
+    return HomeView().modelContainer(container).environment(TabBar())
 }

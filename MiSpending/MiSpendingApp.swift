@@ -30,5 +30,6 @@ struct MiSpendingApp: App {
             ContentView()
         }
         .modelContainer(sharedModelContainer)
+        .environment(TabBar())
     }
 }

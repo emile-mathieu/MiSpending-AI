@@ -44,6 +44,7 @@ final class Onboard {
 @Model
 final class Expense: Identifiable {
     @Attribute var id: UUID = UUID()
+    @Attribute var user: User?
     @Attribute var merchant_name: String
     @Attribute var category_name: String
     @Attribute var total_amount_paid: Double
@@ -60,11 +61,16 @@ final class Expense: Identifiable {
         }
     }
 
-    init(id: UUID = UUID(), merchant_name: String, category_name: String, total_amount_paid: Double, currency: String, date: Date) {
+    init(id: UUID = UUID(), user: User? = nil,  merchant_name: String, category_name: String, total_amount_paid: Double, currency: String, date: Date) {
         self.merchant_name = merchant_name
         self.category_name = category_name
         self.total_amount_paid = total_amount_paid
         self.currency = currency
         self.date = date
     }
+}
+
+@Observable
+class TabBar {
+    var showTabBar: Bool = true
 }
