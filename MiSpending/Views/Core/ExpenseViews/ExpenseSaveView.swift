@@ -22,7 +22,7 @@ struct ExpenseSaveView: View {
     @FocusState private var isFocused: Bool
     
     private func saveChanges() {
-        let newExpense: Expense = .init(merchant_name: temporaryName, category_name: temporaryCategoryType, total_amount_paid: temporaryAmount, currency: temporaryCurrency, date: temporaryDate)
+        let newExpense: Expense = .init(merchant_name: temporaryName, category_name: temporaryCategoryType, total_amount_paid: temporaryAmount, currency: user.first!.preferredCurrency, date: temporaryDate)
         user.first!.expenses.append(newExpense)
         dismiss()
     }

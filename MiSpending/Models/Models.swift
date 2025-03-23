@@ -56,7 +56,7 @@ final class Expense: Identifiable {
             case "Housing & Utilities": return .orange
             case "Entertainment": return .red
             case "Health & Fitness": return .purple
-            default: return .gray // Default color for user created category
+            default: return .gray
         }
     }
 

@@ -170,10 +170,11 @@ struct ExpenseCameraView: View {
 }
 
 #Preview {
-    @Previewable @State var showPreview: Bool = false
-    let testImage = UIImage(named: "receipt-test")
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: User.self, configurations: config)
-    container.mainContext.insert(getMockData())
-    return ExpenseCameraView(imageTaken: testImage!, isSheetPresented: $showPreview).modelContainer(container)
+//    Uncomment to test but it will break because of API call
+//    @Previewable @State var showPreview: Bool = false
+//    let testImage = UIImage(named: "receipt-test")
+//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+//    let container = try! ModelContainer(for: User.self, configurations: config)
+//    container.mainContext.insert(getMockData())
+//    return ExpenseCameraView(imageTaken: testImage!, isSheetPresented: $showPreview).modelContainer(container)
 }
