@@ -1,4 +1,4 @@
-# MiSpending AI
+# MiSpending
 MiSpending IOS App, a simple finance app to track and analyze your spendings with Machine Leaning and Computer Vision.
 ## Table of Contents
 
