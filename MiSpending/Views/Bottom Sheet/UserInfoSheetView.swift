@@ -13,8 +13,6 @@ struct UserInfoSheetView: View {
     @Environment(\.colorScheme) private var scheme
     @Environment(\.dismiss) var dismiss
     
-    @FocusState var isInputActive: Bool
-    
     @State var name: String = ""
     @State var preferredCurrency: String = "GBP"
     @State var budget: Int = 0
@@ -32,7 +30,6 @@ struct UserInfoSheetView: View {
     }
     
     var body: some View {
-        NavigationStack {
             VStack(spacing: 10){
                 Image(systemName: "person.crop.circle")
                     .resizable()
@@ -53,7 +50,6 @@ struct UserInfoSheetView: View {
                         
                         TextField("Enter account name", text: $name)
                             .keyboardType(.alphabet)
-                            .focused($isInputActive)
                             .submitLabel(.next)
                             .padding()
                             .background(Color(.secondarySystemBackground))
@@ -64,9 +60,7 @@ struct UserInfoSheetView: View {
                         Text("Monthly Budget")
                             .font(.headline)
                         
-                        TextField("Amount", value: $budget, format: .number)
-                            .keyboardType(.numberPad)
-                            .focused($isInputActive)
+                        CustomNumberPadTextField(value: $budget, placeholder: "Amount e.g., 500")
                             .padding()
                             .background(Color(.secondarySystemBackground))
                             .cornerRadius(8)
@@ -113,22 +107,10 @@ struct UserInfoSheetView: View {
                 }.padding(.top, 10)
                 
             }
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button(action: {
-                        isInputActive = false
-                    }) {
-                        Image(systemName: "keyboard.chevron.compact.down")
-                            .foregroundStyle(.black)
-                    }
-                }
-            }
             .padding([.horizontal, .bottom], 15)
             .background(scheme == .light ? .white : Color(red: 20/255, green: 20/255, blue: 20/255), in: .rect(cornerRadius: 15))
             .padding(.horizontal, 15)
         }
-    }
 }
 
 #Preview {
