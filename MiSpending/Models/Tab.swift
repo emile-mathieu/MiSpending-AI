@@ -19,7 +19,7 @@ enum Tab: String, CaseIterable {
         case .expenses: return "Expenses"
         case .search: return "Search"
         case .addExpense: return ""
-        case .categories: return "Categories"
+        case .categories: return "Analytics"
         case .profile: return "Profile"
         }
     }

@@ -18,7 +18,12 @@ struct AnalyticsView: View {
                         SimpleSectorMarkView(user: user.first!)
                     }
                 } header: { Text("Expense Categories") }
-            }.navigationTitle("Cateogories")
+                Section {
+                    NavigationLink(destination: BarChartView(user: user.first!)) {
+                        SimpleBarChartView(user: user.first!)
+                    }
+                } header: { Text("Category Based Spendings") }
+            }.navigationTitle("Analytics")
         }
     }
 }
