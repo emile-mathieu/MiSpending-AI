@@ -67,5 +67,5 @@ func groupedExpensesByCategory(expenses: [Expense]) -> [(category: String, total
             return (category: category, total: total, color: categoryColors[category] ?? .gray)
         }
     
-    return grouped
+    return grouped.sorted { $0.category < $1.category }
 }

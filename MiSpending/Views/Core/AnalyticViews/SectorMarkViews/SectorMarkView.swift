@@ -12,8 +12,24 @@ import Charts
 struct SectorMarkView: View {
     let user: User
     
+    @State private var selectedAngle: Int?
+    @State private var selectedSector: String?
+    @State private var selectedValue: Int?
+    
     var groupedData: [(category: String, total: Double, color: Color)] {
-        groupedExpensesByCategory(expenses: user.expenses)
+        return groupedExpensesByCategory(expenses: user.expenses)
+    }
+    private func findSelectedAngle(target: Int) -> (String, Int) {
+        var accumulated = 0
+
+        for item in groupedData {
+            accumulated += Int(item.total)
+            if target <= accumulated {
+                return (item.category, Int(item.total))
+            }
+        }
+
+        return ("", 0)
     }
     var body: some View {
         NavigationStack {
@@ -29,12 +45,27 @@ struct SectorMarkView: View {
                         )
                         .cornerRadius(8)
                         .foregroundStyle(data.color)
+                        .opacity(selectedSector == nil ? 1.0 : (selectedSector == data.category ? 1.0 : 0.5))
                         
                     }
                     
+                }.frame(maxWidth: .infinity, maxHeight: 350)
+                .chartAngleSelection(value: $selectedAngle)
+                .onChange(of: selectedAngle) { _, newValue in
+                    if let newValue {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            (selectedSector, selectedValue) = findSelectedAngle(target: newValue)
+                        }
+                    }
                 }
-                .aspectRatio(1, contentMode: .fit)
-                .frame(maxWidth: .infinity, maxHeight: 350)
+                .chartBackground { proxy in
+                    VStack {
+                        Text(selectedSector ?? "Categories")
+                            .font(.headline)
+                        Text("Total: \(selectedValue ?? 0)")
+                            .font(.subheadline)
+                    }.foregroundStyle(.primary)
+                }
                 LazyVGrid(
                     columns: [GridItem(.adaptive(minimum: 150), spacing: 10)],
                     alignment: .leading,
@@ -55,7 +86,7 @@ struct SectorMarkView: View {
             .padding()
             .navigationTitle("Expense Categories")
             .navigationBarTitleDisplayMode(.inline)
-           
+            
         }
     }
 }

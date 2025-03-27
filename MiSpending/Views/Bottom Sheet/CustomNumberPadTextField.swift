@@ -60,7 +60,7 @@ struct CustomNumberPadTextField: UIViewRepresentable {
         // Create a Done button using the system image "keyboard.chevron.compact.down".
         let doneImage = UIImage(systemName: "keyboard.chevron.compact.down")
         let doneButton = UIBarButtonItem(image: doneImage, style: .done, target: context.coordinator, action: #selector(Coordinator.doneTapped))
-        doneButton.tintColor = .black // Mimics .foregroundStyle(.black) in SwiftUI.
+        doneButton.tintColor = .label
         toolbar.items = [spacer, doneButton]
         tf.inputAccessoryView = toolbar
         

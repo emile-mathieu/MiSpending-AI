@@ -75,7 +75,7 @@ struct ExpenseSaveView: View {
                             isInputActive = false
                         }) {
                             Image(systemName: "keyboard.chevron.compact.down")
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.primary)
                         }
                     }
                 }

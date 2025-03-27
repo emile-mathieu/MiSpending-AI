@@ -57,9 +57,16 @@ struct ExpensesView: View {
         }
         return total
     }
-//    var getExpensesOfMonth: [Expense] {
-//        
-//    }
+    var getExpensesOfMonth: [Expense] {
+        let currentMonth = Calendar.current.component(.month, from: Date())
+        let currentYear = Calendar.current.component(.year, from: Date())
+        return user.first!.expenses.filter { expense in
+            let expenseMonth = Calendar.current.component(.month, from: expense.date)
+            let expenseYear = Calendar.current.component(.year, from: expense.date)
+            return expenseMonth == currentMonth && expenseYear == currentYear
+        }.sorted { $0.date < $1.date }
+        
+    }
     var body: some View {
         NavigationStack {
             ZStack {
@@ -92,7 +99,7 @@ struct ExpensesView: View {
                         
                         if let user = user.first, !user.expenses.isEmpty {
                             LazyVStack(spacing: 15) {
-                                ForEach(user.expenses.sorted { $0.date > $1.date }, id: \.self) { expense in
+                                ForEach(getExpensesOfMonth, id: \.self) { expense in
                                     NavigationLink(destination: ExpenseDetailView(user: user, expense: expense)){
                                         expenseRowView(expense: expense, currencySymbol: currencySymbol)
                                     }
