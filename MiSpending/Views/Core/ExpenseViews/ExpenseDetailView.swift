@@ -1,135 +1,139 @@
 import SwiftUI
 
 struct ExpenseDetailView: View {
-    let currencyList: [String] = ["GBP", "USD", "EUR"]
+    
     let user: User
+    
+    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) var dismiss
+    @Environment(TabBar.self) private var tabBar
+    
     @Bindable var expense: Expense
+    
+    @State private var buttonVisible = false
+    
     @State private var temporaryName: String = ""
     @State private var temporaryCategoryType: String = ""
-    @State private var temporaryCurrency: String = ""
     @State private var temporaryAmount: Double = 0.0
     @State private var temporaryDate: Date = Date()
+    
+    @FocusState private var isInputActive: Bool
     
     private func loadTemporaryValues() {
         temporaryName = expense.merchant_name
         temporaryCategoryType = expense.category_name
-        temporaryCurrency = expense.currency
         temporaryAmount = expense.total_amount_paid
         temporaryDate = expense.date
     }
     private func saveChanges() {
         expense.merchant_name = temporaryName
-        expense.currency = temporaryCategoryType
-        expense.currency = temporaryCurrency
+        expense.category_name = temporaryCategoryType
         expense.total_amount_paid = temporaryAmount
         expense.date = temporaryDate
         dismiss()
     }
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
-
-                VStack(alignment: .leading, spacing: 10) {
-                    transactionNameSection
-                    categorySection
-                    currencyAndAmountSection
-                    transactionDateSection
-                    Spacer()
-                }
-                .padding(.horizontal)
+            Form {
+                transactionNameSection
+                categorySection
+                currencyAndAmountSection
+                transactionDateSection
+                deleteButton
             }
-            .navigationTitle("Transaction")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    saveButton
+            .listSectionSpacing(10)
+            
+                .navigationTitle("Transaction")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        saveButton
+                    }
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button(action: {
+                            isInputActive = false
+                        }) {
+                            Image(systemName: "keyboard.chevron.compact.down")
+                                .foregroundStyle(.primary)
+                        }
+                    }
                 }
+        }.onAppear {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                tabBar.showTabBar = false
             }
-        }.onAppear(perform: loadTemporaryValues)
+            if temporaryName.isEmpty {
+                loadTemporaryValues()
+            }
+        }
+        .onDisappear {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                tabBar.showTabBar = true
+            }
+        }
     }
-
+    
     private var transactionNameSection: some View {
-        Section(header: Text("Transaction Name")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
+        Section(header: Text("Transaction")) {
             TextField("Name", text: $temporaryName)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 20)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                .padding(.bottom, 5)
+                .keyboardType(.default)
+                .submitLabel(.done)
+                .focused($isInputActive)
         }
     }
     
     private var categorySection: some View {
-        VStack(alignment: .leading) {
-            Text("Category Type")
-                .font(.footnote)
-                .foregroundColor(.secondary)
-            
+        Section(header: Text("Category")) {
             NavigationLink(destination: CategoryPickerView(selectedCategory: $temporaryCategoryType, categories: user.categories)) {
                 HStack {
-                    Text("Category")
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Text(temporaryCategoryType)
-                        .foregroundColor(.secondary)
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.secondary)
+                    Text(temporaryCategoryType.isEmpty ? "Category" : temporaryCategoryType)
                 }
-                .padding()
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
-            .buttonStyle(PlainButtonStyle()) // Ensures clean tap behavior
         }
-        .padding(.vertical, 5)
     }
-
     private var currencyAndAmountSection: some View {
-        Section(header: Text("Currency & Amount")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
-            HStack(spacing: 20) {
-                Picker("Currency", selection: $temporaryCurrency) {
-                    ForEach(currencyList, id: \.self) {
-                        Text($0)
-                    }
-                }
-                .pickerStyle(.menu)
-                .tint(.primary)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 50)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                .frame(maxWidth: .infinity)
-
-                TextField("Amount", value: $temporaryAmount, format: .number)
-                    .keyboardType(.decimalPad)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 20)
-                    .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                    .frame(maxWidth: .infinity)
-            }
-            .padding(.bottom, 5)
+        Section(header: Text("Amount")) {
+            TextField("Amount", value: $temporaryAmount, format: .currency(code: user.preferredCurrency))
+                .keyboardType(.decimalPad)
+                .focused($isInputActive)
         }
     }
-
+    
     private var transactionDateSection: some View {
-        Section(header: Text("Transaction Date")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
+        Section(header: Text("Transaction Date")){
             DatePicker("Start Date", selection: $temporaryDate, displayedComponents: [.date])
                 .datePickerStyle(.graphical)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
         }
     }
-
+    private var deleteButton: some View {
+        Section {
+            Button(action: {
+                context.delete(expense)
+                dismiss()
+            }) {
+                HStack {
+                    Image(systemName: "trash")
+                        .font(.headline)
+                    Text("Delete")
+                        .font(.headline)
+                }
+                .foregroundStyle(.white)
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.red)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .shadow(radius: 5)
+                .buttonStyle(.plain)
+            }.opacity(buttonVisible ? 1 : 0)
+                .onAppear {
+                    withAnimation(.easeIn(duration: 0.5)) {
+                        buttonVisible = true
+                    }
+                }
+        }.listRowInsets(EdgeInsets())
+    }
+    
     private var saveButton: some View {
         Button(action: {
             saveChanges()
@@ -137,7 +141,7 @@ struct ExpenseDetailView: View {
         }) {
             Text("Save")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(RoundedRectangle(cornerRadius: 12).fill(.green))
@@ -157,7 +161,7 @@ struct CategoryPickerView: View {
                     Spacer()
                     if category == selectedCategory {
                         Image(systemName: "checkmark")
-                            .foregroundColor(.blue)
+                            .foregroundStyle(.blue)
                     }
                 }
                 .contentShape(Rectangle())
@@ -176,5 +180,5 @@ struct CategoryPickerView: View {
 
 #Preview {
     // Add a preview with a mock `Expense` object
-    ExpenseDetailView(user: .init(name: "Test User", preferredCurrency: "GBP"), expense: .init(merchant_name: "Sample", category_name: "Food & Groceries", total_amount_paid: 12.34, currency: "GBP", date: Date()))
+    ExpenseDetailView(user: .init(name: "Test User", budget: 1000, preferredCurrency: "GBP"), expense: .init(merchant_name: "Sample", category_name: "Food & Groceries", total_amount_paid: 12.34, currency: "GBP", date: Date())).environment(TabBar())
 }

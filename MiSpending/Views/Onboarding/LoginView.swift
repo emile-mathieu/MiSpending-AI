@@ -107,7 +107,7 @@ struct LoginView: View {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark.circle.fill")
                             .resizable()
-                            .foregroundColor(.primary)
+                            .foregroundStyle(.black)
                             .font(.system(size: 20))
                     }
                 }
@@ -120,15 +120,4 @@ struct LoginView: View {
 
 #Preview {
     LoginView()
-    //        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    //        .background{
-    //            LinearGradient(gradient: Gradient(colors: [.blue, .red]), startPoint: .topLeading, endPoint: .bottomTrailing)
-    //                .ignoresSafeArea()
-    //                .hueRotation(.degrees(animateGradient ? 45 : 0))
-    //                .onAppear{
-    //                    withAnimation(.easeIn(duration: 3).repeatForever(autoreverses: true)){
-    //                        animateGradient.toggle()
-    //                    }
-    //                }
-    //        }
 }

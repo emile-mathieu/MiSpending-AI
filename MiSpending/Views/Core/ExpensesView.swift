@@ -9,13 +9,63 @@ import SwiftUI
 import SwiftData
 struct ExpensesView: View {
     @Query var user: [User]
-    private func totalExpenses() -> Int {
+    
+    var gradient: Gradient {
+        if totalExpenses <= user.first!.budget {
+            return Gradient(colors: [Color.green.opacity(0.9), Color.green.opacity(0.7)])
+        } else {
+                return Gradient(colors: [Color.red.opacity(0.9), Color.red.opacity(0.7)])
+        }
+    }
+    var currencySymbol: String {
+        switch user.first?.preferredCurrency {
+        case "GBP":
+            return "£"
+        case "EUR":
+            return "€"
+        case "USD":
+            return "$"
+        case "SGD":
+            return "S$"
+        case "IDR":
+            return "Rp"
+        case "MYR":
+            return "RM"
+        default:
+            return "?"
+        }
+    }
+    var dateRange: String {
+        let calendar = Calendar.current
+        guard let monthInterval = calendar.dateInterval(of: .month, for: Date()),
+              let lastDay = calendar.date(byAdding: .day, value: -1, to: monthInterval.end) else {
+            return "Unknown Date"
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy"
+        
+        let startDate = formatter.string(from: monthInterval.start)
+        let endDate = formatter.string(from: lastDay)
+        return "\(startDate) - \(endDate)"
+    }
+    private var totalExpenses: Int {
         let expenses = user.first?.expenses ?? []
         var total: Int = 0
         for expense in expenses {
             total += Int(expense.total_amount_paid)
         }
         return total
+    }
+    var getExpensesOfMonth: [Expense] {
+        let currentMonth = Calendar.current.component(.month, from: Date())
+        let currentYear = Calendar.current.component(.year, from: Date())
+        return user.first!.expenses.filter { expense in
+            let expenseMonth = Calendar.current.component(.month, from: expense.date)
+            let expenseYear = Calendar.current.component(.year, from: expense.date)
+            return expenseMonth == currentMonth && expenseYear == currentYear
+        }.sorted { $0.date < $1.date }
+        
     }
     var body: some View {
         NavigationStack {
@@ -25,48 +75,33 @@ struct ExpensesView: View {
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(LinearGradient(
-                                    gradient: Gradient(colors: [Color.green.opacity(0.8), Color.green.opacity(0.6)]),
+                                    gradient: gradient,
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 ))
-                                .frame(height: 170)
-                                .shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
+                                .frame(height: 180)
                                 .padding(.horizontal)
                             
-                            VStack {
-                                Text("Total Expenses")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                HStack {
-                                    Text("£ \(totalExpenses())")
-                                        .font(.largeTitle)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                    Image(systemName: "arrowshape.down.circle")
-                                        .resizable()
-                                        .frame(width: 25, height: 25)
-                                        .foregroundStyle(Color.white)
-                                }
-                            }
-                        }
+                            DisplayAmountView(budget: user.first!.budget, totalExpenses: totalExpenses, localCurrency: currencySymbol)
+                            
+                        }.shadow(color: Color.black.opacity(0.02), radius: 5, x: 0, y: 2)
                         
-                        // Transaction History Section
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Transaction History")
                                 .font(.title3)
                                 .fontWeight(.semibold)
-                            Text("01 Jan 2025 - 31 Jan 2025")
+                            Text(dateRange)
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.secondary)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
                         
                         if let user = user.first, !user.expenses.isEmpty {
-                            LazyVStack(spacing: 10) {
-                                ForEach(user.expenses, id: \.self) { expense in
+                            LazyVStack(spacing: 15) {
+                                ForEach(getExpensesOfMonth, id: \.self) { expense in
                                     NavigationLink(destination: ExpenseDetailView(user: user, expense: expense)){
-                                        expenseRowView(expense: expense)
+                                        expenseRowView(expense: expense, currencySymbol: currencySymbol)
                                     }
                                     .padding(.horizontal)
                                 }
@@ -78,48 +113,100 @@ struct ExpensesView: View {
             }.navigationTitle("Expenses")
         }
     }
-    }
-
-#Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: User.self, configurations: config)
-    container.mainContext.insert(getMockData())
-    return ExpensesView().modelContainer(container)
 }
 
 
-struct expenseRowView: View {
-    let expense: Expense
-    let colors: [Color] = [
-        Color.red.opacity(0.2),
-        Color.blue.opacity(0.2),
-        Color.green.opacity(0.2),
-        Color.orange.opacity(0.2),
-        Color.purple.opacity(0.2),
-        Color.pink.opacity(0.2)
-        ]
-        
-        // Helper function to get a random color
-    private func getRandomColor() -> Color {
-        colors.randomElement() ?? Color.black.opacity(0.12)
+private struct DisplayAmountView: View {
+    let budget: Int
+    let totalExpenses: Int
+    let localCurrency: String
+    var progress: Double {
+        if (totalExpenses <= budget) {
+            return Double(totalExpenses) / Double(budget)
+        } else {
+            return 1.0
+        }
     }
+    var currencySymbol: String {
+        return localCurrency.first!.uppercased()
+    }
+    var body: some View {
+        VStack(spacing: 8) {
+            Text("Budget Limit")
+                .font(.headline)
+                .foregroundStyle(.white)
+            
+            Text("\(localCurrency)\(budget)")
+                .font(.title3.bold())
+                .foregroundStyle(.white)
+            
+            HStack(spacing: 5) {
+                Text("Total Expenses")
+                    .font(.headline)
+                    .foregroundStyle(.white)
+                Spacer()
+                Image(systemName: "arrow.down.circle.fill")
+                    .resizable()
+                    .frame(width: 20, height: 20)
+                    .foregroundStyle(.white)
+            }
+            
+            Text("\(localCurrency)\(totalExpenses)")
+                .font(.largeTitle.bold())
+                .foregroundStyle(.white)
+            ProgressView(value: progress)
+                .progressViewStyle(.linear)
+                .tint(.white)
+                .frame(height: 4)
+                .clipShape(RoundedRectangle(cornerRadius: 2))
+                .padding(.top, 5)
+                .animation(.easeInOut(duration: 2), value: progress)
+        }
+        .frame(maxWidth: .infinity, minHeight: 150)
+        .padding(.horizontal, 24)
+    }
+}
+
+
+
+private struct expenseRowView: View {
+    @Environment(\.colorScheme) private var scheme
+    let expense: Expense
+    let currencySymbol: String
     
     private func getFirstLetter(_ string: String) -> String {
         string.first?.uppercased() ?? ""
+    }
+    private func getCurrencySymbol(for currencyCode: String) -> String {
+        switch currencyCode {
+        case "GBP":
+            return "£"
+        case "EUR":
+            return "€"
+        case "USD":
+            return "$"
+        case "SGD":
+            return "S$"
+        case "IDR":
+            return "Rp"
+        case "MYR":
+            return "RM"
+        default:
+            return ""
+        }
     }
     var body: some View {
         HStack(alignment: .center) {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(getRandomColor())
+                    .fill(expense.category_color.opacity(0.2))
                     .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 0)
                     .frame(width: 50, height: 50)
                 Text(getFirstLetter(expense.merchant_name))
                     .font(.headline)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(.primary)
             }
             
-            // Title and Category
             VStack(alignment: .leading, spacing: 5) {
                 Text(expense.merchant_name)
                     .foregroundStyle(Color.primary)
@@ -127,27 +214,33 @@ struct expenseRowView: View {
                 HStack {
                     Text("Category:")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     Text(expense.category_name)
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .underline()
                 }
             }
-            
-            Spacer() // Pushes the amount to the far right edge
-            
-            // Amount at the far right
-            Text("£ \(Int(expense.total_amount_paid))")
+            Spacer()
+            Text(getCurrencySymbol(for: expense.currency) + String(Int(expense.total_amount_paid)))
                 .font(.headline)
-                .foregroundColor(.black)
-            Image(systemName: "chevron.right")
-                .foregroundStyle(.black)
+                .foregroundStyle(.primary)
+            Image("chevron-right")
+                .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(.primary)
+                .frame(width: 20, height: 20)
                 
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 10)
-        .background(Color.white)
+        .background(scheme == .light ? .white : .gray.opacity(0.25))
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
+}
+#Preview {
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: User.self, configurations: config)
+    container.mainContext.insert(getMockData())
+    return ExpensesView().modelContainer(container)
 }

@@ -8,12 +8,10 @@
 import SwiftUI
 import SwiftData
 struct ExpenseSaveView: View {
-
+    
     @Environment(\.dismiss) var dismiss
     
     @Query var user: [User]
-    
-    @Bindable var expense: Expense
     
     @State private var temporaryName: String = ""
     @State private var temporaryCategoryType: String = ""
@@ -21,35 +19,21 @@ struct ExpenseSaveView: View {
     @State private var temporaryAmount: Double = 0.0
     @State private var temporaryDate: Date = Date()
     
-    let currencyList: [String] = ["GBP", "USD", "EUR"]
+    @FocusState var isInputActive: Bool
     
-    private func loadTemporaryValues() {
-        temporaryName = expense.merchant_name
-        temporaryCategoryType = expense.category_name
-        temporaryCurrency = expense.currency
-        temporaryAmount = expense.total_amount_paid
-        temporaryDate = expense.date
-    }
     private func saveChanges() {
-        let newExpense: Expense = .init(merchant_name: temporaryName, category_name: temporaryCategoryType, total_amount_paid: temporaryAmount, currency: temporaryCurrency, date: temporaryDate)
+        let newExpense: Expense = .init(merchant_name: temporaryName, category_name: temporaryCategoryType, total_amount_paid: temporaryAmount, currency: user.first!.preferredCurrency, date: temporaryDate)
         user.first!.expenses.append(newExpense)
         dismiss()
     }
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.systemGroupedBackground)
-                    .ignoresSafeArea()
-
-                VStack(alignment: .leading, spacing: 10) {
-                    transactionNameSection
-                    categorySection
-                    currencyAndAmountSection
-                    transactionDateSection
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.top, 40)
+            Form {
+                transactionNameSection
+                categorySection
+                currencyAndAmountSection
+                transactionDateSection
+                
             }
             .navigationTitle("Transaction")
             .navigationBarTitleDisplayMode(.inline)
@@ -61,88 +45,51 @@ struct ExpenseSaveView: View {
                     CancelButton
                 }
             }
-        }.onAppear(perform: loadTemporaryValues)
+        }
     }
-
+    
     private var transactionNameSection: some View {
-        Section(header: Text("Transaction Name")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
+        Section(header: Text("Transaction")) {
             TextField("Name", text: $temporaryName)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 20)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                .padding(.bottom, 5)
-            }
+        }
     }
     
     private var categorySection: some View {
-        VStack(alignment: .leading) {
-            Text("Category Type")
-                .font(.footnote)
-                .foregroundColor(.secondary)
-            
+        Section(header: Text("Category")) {
             NavigationLink(destination: CategoryPickerView(selectedCategory: $temporaryCategoryType, categories: user.first!.categories)) {
                 HStack {
-                    Text("Category")
-                        .foregroundColor(.primary)
-                    Spacer()
-                    Text(temporaryCategoryType)
-                        .foregroundColor(.secondary)
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.secondary)
+                    Text(temporaryCategoryType.isEmpty ? "Category" : temporaryCategoryType)
                 }
-                .padding()
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
-            .buttonStyle(PlainButtonStyle()) // Ensures clean tap behavior
         }
-        .padding(.vertical, 5)
     }
-
     private var currencyAndAmountSection: some View {
-        Section(header: Text("Currency & Amount")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
-            HStack(spacing: 20) {
-                Picker("Currency", selection: $temporaryCurrency) {
-                    ForEach(currencyList, id: \.self) {
-                        Text($0)
+        Section(header: Text("Amount")) {
+            TextField("Amount", value: $temporaryAmount, format: .currency(code: user.first!.preferredCurrency))
+                .keyboardType(.decimalPad)
+                .focused($isInputActive)
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button(action: {
+                            isInputActive = false
+                        }) {
+                            Image(systemName: "keyboard.chevron.compact.down")
+                                .foregroundStyle(.primary)
+                        }
                     }
                 }
-                .pickerStyle(.menu)
-                .tint(.primary)
-                .padding(.vertical, 5)
-                .padding(.horizontal, 50)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                .frame(maxWidth: .infinity)
-
-                TextField("Amount", value: $temporaryAmount, format: .number)
-                    .keyboardType(.decimalPad)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 20)
-                    .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-                    .frame(maxWidth: .infinity)
-            }
-            .padding(.bottom, 5)
+            
         }
     }
-
+    
     private var transactionDateSection: some View {
-        Section(header: Text("Transaction Date")
-            .font(.footnote)
-            .foregroundStyle(.secondary)) {
-            DatePicker("Start Date", selection: $temporaryDate, displayedComponents: [.date])
-                .datePickerStyle(.graphical)
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .circular))
-        }
+        Section(header: Text("Transaction Date")){
+                DatePicker("Start Date", selection: $temporaryDate, displayedComponents: [.date])
+                    .datePickerStyle(.graphical)
+            }
     }
-
+    
     private var saveButton: some View {
         Button(action: {
             saveChanges()
@@ -150,7 +97,7 @@ struct ExpenseSaveView: View {
         }) {
             Text("Save")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(RoundedRectangle(cornerRadius: 12).fill(.green))
@@ -162,7 +109,7 @@ struct ExpenseSaveView: View {
         }) {
             Text("Cancel")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(RoundedRectangle(cornerRadius: 12).fill(.red))
@@ -171,6 +118,8 @@ struct ExpenseSaveView: View {
 }
 
 #Preview {
-    // Add a preview with a mock `Expense` object
-    ExpenseDetailView(user: .init(name: "Test User", preferredCurrency: "GBP"), expense: .init(merchant_name: "Sample", category_name: "Food & Groceries", total_amount_paid: 12.34, currency: "GBP", date: Date()))
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: User.self, configurations: config)
+    container.mainContext.insert(getMockData())
+    return ExpenseSaveView().modelContainer(container)
 }

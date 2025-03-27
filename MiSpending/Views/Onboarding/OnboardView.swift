@@ -62,12 +62,12 @@ struct OnboardView: View {
                         .frame(maxWidth: .infinity , maxHeight: 50)
                         .background(Color.primary)
                         .foregroundStyle(scheme == .light ? .white : .black)
-                        .cornerRadius(25)
+                        .clipShape(.capsule)
                         .padding(.top, 20)
                     }
                     .floatingButtomSheet(isPresented: $showingInfoSheet, onDismiss: handleOnboard){
                         UserInfoSheetView()
-                            .presentationDetents([.height(460)])
+                            .presentationDetents([.height(580)])
                     }
                     
                     
