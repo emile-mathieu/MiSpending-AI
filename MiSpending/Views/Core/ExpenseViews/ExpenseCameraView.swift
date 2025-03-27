@@ -30,43 +30,11 @@ struct ExpenseCameraView: View {
     }
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color(.systemGroupedBackground).ignoresSafeArea()
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
-                        transactionNameSection
-                        categorySection
-                        currencyAndAmountSection
-                        transactionDateSection
-                        Spacer()
-                    }
-                    .redacted(reason: isLoading ? .placeholder : [])
-                    .padding(.horizontal)
-                    .padding(.top, 40)
-                }
-            }
-            .onAppear {
-                if temporaryName.isEmpty {
-                    Task {
-                        let responseData = try? await ocr(image: imageTaken)
-                        temporaryName = responseData?.category_name ?? ""
-                        temporaryCategoryType = responseData?.category_name ?? ""
-                        temporaryCurrency = responseData?.currency ?? ""
-                        temporaryAmount = responseData?.total_amount_paid ?? 0.0
-                        if let dateString = responseData?.date {
-                            let formatter = DateFormatter()
-                            formatter.dateFormat = "yyyy-MM-dd"
-                            formatter.locale = Locale(identifier: "en_US_POSIX")
-                            
-                            if let date = formatter.date(from: dateString) {
-                                temporaryDate = date
-                            } else {
-                                temporaryDate = Date()
-                            }
-                        }
-                        isLoading = false
-                    }
-                }
+            Form {
+                transactionNameSection
+                categorySection
+                currencyAndAmountSection
+                transactionDateSection
             }
             .navigationTitle("Transaction")
             .navigationBarTitleDisplayMode(.inline)
@@ -74,86 +42,108 @@ struct ExpenseCameraView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     saveButton
-                    
                 }
-                ToolbarItem(placement: .topBarLeading){
+                ToolbarItem(placement: .topBarLeading) {
                     CancelButton
                 }
             }
-        }
-    }
-
-    private var transactionNameSection: some View {
-        Section(header: Text("Transaction")) {
-            TextField("Name", text: $temporaryName)
-        }
-    }
-    
-    private var categorySection: some View {
-        Section(header: Text("Category")) {
-            NavigationLink(destination: CategoryPickerView(selectedCategory: $temporaryCategoryType, categories: user.first!.categories)) {
-                HStack {
-                    Text(temporaryCategoryType.isEmpty ? "Category" : temporaryCategoryType)
+            .listSectionSpacing(10)
+            .redacted(reason: isLoading ? .placeholder : [])
+            .task {
+                if temporaryName.isEmpty {
+                    let responseData = try? await ocr(image: imageTaken)
+                    temporaryName = responseData?.category_name ?? ""
+                    temporaryCategoryType = responseData?.category_name ?? ""
+                    temporaryCurrency = responseData?.currency ?? ""
+                    temporaryAmount = responseData?.total_amount_paid ?? 0.0
+                    if let dateString = responseData?.date {
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "yyyy-MM-dd"
+                        formatter.locale = Locale(identifier: "en_US_POSIX")
+                        
+                        if let date = formatter.date(from: dateString) {
+                            temporaryDate = date
+                        } else {
+                            temporaryDate = Date()
+                        }
+                    }
+                    isLoading = false
                 }
             }
         }
     }
-    private var currencyAndAmountSection: some View {
-        Section(header: Text("Amount")) {
-            TextField("Amount", value: $temporaryAmount, format: .currency(code: user.first!.preferredCurrency))
-                .keyboardType(.decimalPad)
-                .focused($isInputActive)
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button(action: {
-                            isInputActive = false
-                        }) {
-                            Image(systemName: "keyboard.chevron.compact.down")
-                                .foregroundStyle(.black)
-                        }
+        
+        private var transactionNameSection: some View {
+            Section(header: Text("Transaction")) {
+                TextField("Name", text: $temporaryName)
+            }
+        }
+        
+        private var categorySection: some View {
+            Section(header: Text("Category")) {
+                NavigationLink(destination: CategoryPickerView(selectedCategory: $temporaryCategoryType, categories: user.first!.categories)) {
+                    HStack {
+                        Text(temporaryCategoryType.isEmpty ? "Category" : temporaryCategoryType)
                     }
                 }
-            
+            }
         }
-    }
-    
-    private var transactionDateSection: some View {
-        Section(header: Text("Transaction Date")){
+        private var currencyAndAmountSection: some View {
+            Section(header: Text("Amount")) {
+                TextField("Amount", value: $temporaryAmount, format: .currency(code: user.first!.preferredCurrency))
+                    .keyboardType(.decimalPad)
+                    .focused($isInputActive)
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            Spacer()
+                            Button(action: {
+                                isInputActive = false
+                            }) {
+                                Image(systemName: "keyboard.chevron.compact.down")
+                                    .foregroundStyle(.black)
+                            }
+                        }
+                    }
+                
+            }
+        }
+        
+        private var transactionDateSection: some View {
+            Section(header: Text("Transaction Date")){
                 DatePicker("Start Date", selection: $temporaryDate, displayedComponents: [.date])
                     .datePickerStyle(.graphical)
             }
-    }
-
-    private var saveButton: some View {
-        Button(action: {
-            saveChanges()
-        }) {
-            Text("Save")
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background(RoundedRectangle(cornerRadius: 12).fill(.green))
         }
-    }
-    private var CancelButton: some View {
-        Button(action: {
-            dismiss()
-        }) {
-            Image(systemName: "chevron.left")
-                .foregroundColor(.black)
-                .fontWeight(.bold)
+        
+        private var saveButton: some View {
+            Button(action: {
+                saveChanges()
+            }) {
+                Text("Save")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(RoundedRectangle(cornerRadius: 12).fill(.green))
+            }
         }
-    }
+        private var CancelButton: some View {
+            Button(action: {
+                dismiss()
+            }) {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(.black)
+                    .fontWeight(.bold)
+            }
+        }
 }
 
 #Preview {
-//    Uncomment to test but it will break because of API call
-//    @Previewable @State var showPreview: Bool = false
-//    let testImage = UIImage(named: "receipt-test")
-//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-//    let container = try! ModelContainer(for: User.self, configurations: config)
-//    container.mainContext.insert(getMockData())
-//    return ExpenseCameraView(imageTaken: testImage!, isSheetPresented: $showPreview).modelContainer(container)
+//        Uncomment to test but it will break because of API call
+//        @Previewable @State var showPreview: Bool = false
+//        let testImage = UIImage(named: "MiSpending-Logo")
+//        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+//        let container = try! ModelContainer(for: User.self, configurations: config)
+//        container.mainContext.insert(getMockData())
+//        return ExpenseCameraView(imageTaken: testImage!, isSheetPresented: $showPreview).modelContainer(container).environment(TabBar())
 }

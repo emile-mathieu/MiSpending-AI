@@ -61,7 +61,6 @@ func fetchData(_ ocrText: [String]) async throws -> APIResponse {
         
         if let httpResponse = response as? HTTPURLResponse,
            (200...299).contains(httpResponse.statusCode) {
-            print("Success:", String(data: data, encoding: .utf8) ?? "No readable data")
             return try JSONDecoder().decode(APIResponse.self, from: data)
         } else {
             throw URLError(.badServerResponse)
