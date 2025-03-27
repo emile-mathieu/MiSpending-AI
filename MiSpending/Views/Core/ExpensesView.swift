@@ -57,6 +57,9 @@ struct ExpensesView: View {
         }
         return total
     }
+//    var getExpensesOfMonth: [Expense] {
+//        
+//    }
     var body: some View {
         NavigationStack {
             ZStack {

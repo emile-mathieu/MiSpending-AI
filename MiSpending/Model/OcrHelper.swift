@@ -42,7 +42,7 @@ func ocr(image: UIImage) async throws -> APIResponse {
     
 }
 func fetchData(_ ocrText: [String]) async throws -> APIResponse {
-    guard let url = URL(string: "http://localhost:3000/api/extract-receipt") else { throw URLError(.badURL)}
+    guard let url = URL(string: "https://mispending-backend-app-gu566.ondigitalocean.app/api/extract-receipt") else { throw URLError(.badURL)}
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
