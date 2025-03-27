@@ -118,11 +118,11 @@ struct ExpenseDetailView: View {
                     Text("Delete")
                         .font(.headline)
                 }
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .padding()
                 .frame(maxWidth: .infinity)
                 .background(Color.red)
-                .cornerRadius(10)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
                 .shadow(radius: 5)
                 .buttonStyle(.plain)
             }.opacity(buttonVisible ? 1 : 0)
@@ -141,7 +141,7 @@ struct ExpenseDetailView: View {
         }) {
             Text("Save")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(RoundedRectangle(cornerRadius: 12).fill(.green))
@@ -161,7 +161,7 @@ struct CategoryPickerView: View {
                     Spacer()
                     if category == selectedCategory {
                         Image(systemName: "checkmark")
-                            .foregroundColor(.blue)
+                            .foregroundStyle(.blue)
                     }
                 }
                 .contentShape(Rectangle())

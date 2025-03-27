@@ -58,7 +58,7 @@ struct BarChartView: View {
                             .annotation(position: .top) {
                                 Text(String(format: "%.0f", expense.total_amount_paid))
                                     .font(.headline)
-                                    .foregroundColor(.gray)
+                                    .foregroundStyle(.gray)
                             }
                         }
                     }

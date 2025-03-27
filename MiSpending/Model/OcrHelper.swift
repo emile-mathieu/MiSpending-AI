@@ -20,21 +20,21 @@ struct APIResponse: Codable {
     let date: String
 }
 
-func ocr(image: UIImage) async throws -> APIResponse {
+func ocr(image: UIImage) async throws -> [String] {
     let configuration = ImageAnalyzer.Configuration([.text])
     let analysis = ImageAnalyzer()
     do {
         let results = try await analysis.analyze(image, configuration: configuration)
         let text = results.transcript
+        if text.isEmpty {
+            throw NSError(domain: "AnalysisError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Transcript is empty"])
+        }
         let lines = text.split(separator: "\n")
-        
         // Convert [Substring] to [String]
         let convertedArray = lines.map(String.init)
         
-        let response = try await fetchData(convertedArray)
-        return response
+        return convertedArray
     } catch {
-        print("Error: \(error)")
         throw error
     }
     
@@ -66,7 +66,6 @@ func fetchData(_ ocrText: [String]) async throws -> APIResponse {
             throw URLError(.badServerResponse)
         }
     } catch {
-        print("Request failed with error:", error.localizedDescription)
         throw error
     }
     

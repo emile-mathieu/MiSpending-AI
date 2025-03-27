@@ -51,7 +51,13 @@ struct ExpenseCameraView: View {
             .redacted(reason: isLoading ? .placeholder : [])
             .task {
                 if temporaryName.isEmpty {
-                    let responseData = try? await ocr(image: imageTaken)
+                    var readOCr: [String] = []
+                    do {
+                        readOCr = try await ocr(image: imageTaken)
+                    } catch {
+                        dismiss()
+                    }
+                    let responseData = try? await fetchData(readOCr)
                     temporaryName = responseData?.category_name ?? ""
                     temporaryCategoryType = responseData?.category_name ?? ""
                     temporaryCurrency = responseData?.currency ?? ""
@@ -121,7 +127,7 @@ struct ExpenseCameraView: View {
             }) {
                 Text("Save")
                     .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 8)
                     .background(RoundedRectangle(cornerRadius: 12).fill(.green))
@@ -132,7 +138,7 @@ struct ExpenseCameraView: View {
                 dismiss()
             }) {
                 Image(systemName: "chevron.left")
-                    .foregroundColor(.black)
+                    .foregroundStyle(.black)
                     .fontWeight(.bold)
             }
         }

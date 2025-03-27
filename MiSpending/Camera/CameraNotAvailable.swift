@@ -16,6 +16,6 @@ struct CameraNotAvailable: View {
             Text("Please Enable Your Camera")
                 .font(.headline)
         }
-        .foregroundColor(.gray)
+        .foregroundStyle(.gray)
     }
 }

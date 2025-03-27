@@ -151,7 +151,7 @@ private struct DisplayAmountView: View {
                 .progressViewStyle(.linear)
                 .tint(.white)
                 .frame(height: 4)
-                .cornerRadius(2)
+                .clipShape(RoundedRectangle(cornerRadius: 2))
                 .padding(.top, 5)
                 .animation(.easeInOut(duration: 2), value: progress)
         }
