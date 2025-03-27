@@ -82,7 +82,7 @@ struct ExpensesView: View {
                                 .fontWeight(.semibold)
                             Text(dateRange)
                                 .font(.caption)
-                                .foregroundColor(.gray)
+                                .foregroundStyle(.secondary)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
@@ -124,26 +124,26 @@ private struct DisplayAmountView: View {
         VStack(spacing: 8) {
             Text("Budget Limit")
                 .font(.headline)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
             
             Text("\(localCurrency)\(budget)")
                 .font(.title3.bold())
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
             
             HStack(spacing: 5) {
                 Text("Total Expenses")
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                 Spacer()
                 Image(systemName: "arrow.down.circle.fill")
                     .resizable()
                     .frame(width: 20, height: 20)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
             }
             
             Text("\(localCurrency)\(totalExpenses)")
                 .font(.largeTitle.bold())
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
             ProgressView(value: progress)
                 .progressViewStyle(.linear)
                 .tint(.white)
@@ -160,6 +160,7 @@ private struct DisplayAmountView: View {
 
 
 private struct expenseRowView: View {
+    @Environment(\.colorScheme) private var scheme
     let expense: Expense
     let currencySymbol: String
     
@@ -193,7 +194,7 @@ private struct expenseRowView: View {
                     .frame(width: 50, height: 50)
                 Text(getFirstLetter(expense.merchant_name))
                     .font(.headline)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(.primary)
             }
             
             VStack(alignment: .leading, spacing: 5) {
@@ -203,24 +204,27 @@ private struct expenseRowView: View {
                 HStack {
                     Text("Category:")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     Text(expense.category_name)
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .underline()
                 }
             }
             Spacer()
             Text(getCurrencySymbol(for: expense.currency) + String(Int(expense.total_amount_paid)))
                 .font(.headline)
-                .foregroundColor(.black)
+                .foregroundStyle(.primary)
             Image("chevron-right")
                 .resizable()
+                .renderingMode(.template)
+                .foregroundStyle(.primary)
                 .frame(width: 20, height: 20)
+                
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 10)
-        .background(Color.white)
+        .background(scheme == .light ? .white : .gray.opacity(0.25))
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }

@@ -11,7 +11,7 @@ struct ProfileView: View {
     @Environment(\.modelContext) private var context
     @Query var user: [User]
     @State private var name: String = ""
-    @State private var preferredCurrency: String = ""
+    @State private var preferredCurrency: String = "GBP"
     @State private var budget: Int = 0
     let currencies: [String] = ["GBP","EUR","USD","SGD","IDR","MYR"]
     

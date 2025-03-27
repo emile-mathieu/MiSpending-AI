@@ -33,13 +33,13 @@ struct BarChartView: View {
                         Text(category)
                             .font(.title3)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                         Image(systemName: "chevron.down")
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                     }
                     .padding(.vertical, 8)
                     .padding(.horizontal, 12)
-                    .background(.black.opacity(0.1))
+                    .background(.secondary.opacity(0.15))
                     .clipShape(.rect(cornerRadius: 8))
                 }
                 Chart {
