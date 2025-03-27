@@ -37,16 +37,6 @@ struct SimpleGradientAreaMarkView: View {
     }
     var body: some View {
         VStack(alignment: .leading) {
-            if aboveSpendingLimit {
-                Text("You are over your budget!")
-                    .foregroundStyle(.red)
-                    .font(.headline)
-            } else {
-                Text("You are currently below your budget!")
-                    .foregroundStyle(.green)
-                    .font(.headline)
-                
-            }
             Chart {
                 ForEach(cumulativeExpenses) { expense in
                     LineMark(

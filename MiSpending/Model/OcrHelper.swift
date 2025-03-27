@@ -20,21 +20,21 @@ struct APIResponse: Codable {
     let date: String
 }
 
-func ocr(image: UIImage) async throws -> APIResponse {
+func ocr(image: UIImage) async throws -> [String] {
     let configuration = ImageAnalyzer.Configuration([.text])
     let analysis = ImageAnalyzer()
     do {
         let results = try await analysis.analyze(image, configuration: configuration)
         let text = results.transcript
+        if text.isEmpty {
+            throw NSError(domain: "AnalysisError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Transcript is empty"])
+        }
         let lines = text.split(separator: "\n")
-        
         // Convert [Substring] to [String]
         let convertedArray = lines.map(String.init)
         
-        let response = try await fetchData(convertedArray)
-        return response
+        return convertedArray
     } catch {
-        print("Error: \(error)")
         throw error
     }
     
@@ -42,7 +42,7 @@ func ocr(image: UIImage) async throws -> APIResponse {
     
 }
 func fetchData(_ ocrText: [String]) async throws -> APIResponse {
-    guard let url = URL(string: "http://localhost:3000/api/extract-receipt") else { throw URLError(.badURL)}
+    guard let url = URL(string: "https://mispending-backend-app-gu566.ondigitalocean.app/api/extract-receipt") else { throw URLError(.badURL)}
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
@@ -61,13 +61,11 @@ func fetchData(_ ocrText: [String]) async throws -> APIResponse {
         
         if let httpResponse = response as? HTTPURLResponse,
            (200...299).contains(httpResponse.statusCode) {
-            print("Success:", String(data: data, encoding: .utf8) ?? "No readable data")
             return try JSONDecoder().decode(APIResponse.self, from: data)
         } else {
             throw URLError(.badServerResponse)
         }
     } catch {
-        print("Request failed with error:", error.localizedDescription)
         throw error
     }
     

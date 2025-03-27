@@ -22,6 +22,10 @@ func getMockData() -> User {
                 total_amount_paid: 150.75, currency: "GBP", date: calendar.date(byAdding: .day, value: -7, to: today)!),
         Expense(merchant_name: "Co-op", category_name: "Housing & Utilities",
                 total_amount_paid: 100.00, currency: "GBP", date: calendar.date(byAdding: .day, value: -10, to: today)!),
+        Expense(merchant_name: "Water", category_name: "Housing & Utilities",
+                total_amount_paid: 150.00, currency: "GBP", date: calendar.date(byAdding: .day, value: -12, to: today)!),
+        Expense(merchant_name: "Heating System Repair", category_name: "Housing & Utilities",
+                total_amount_paid: 40.00, currency: "GBP", date: calendar.date(byAdding: .day, value: -12, to: today)!),
         Expense(merchant_name: "Nintendo", category_name: "Entertainment",
                 total_amount_paid: 75.00, currency: "GBP", date: calendar.date(byAdding: .day, value: -15, to: today)!)
     ]
@@ -63,5 +67,5 @@ func groupedExpensesByCategory(expenses: [Expense]) -> [(category: String, total
             return (category: category, total: total, color: categoryColors[category] ?? .gray)
         }
     
-    return grouped
+    return grouped.sorted { $0.category < $1.category }
 }

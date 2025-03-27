@@ -47,6 +47,7 @@ struct SearchExpensesView: View {
 }
 
 private struct expenseRowView: View {
+    @Environment(\.colorScheme) private var scheme
     let expense: Expense
     
     private func getFirstLetter(_ string: String) -> String {
@@ -61,31 +62,31 @@ private struct expenseRowView: View {
                     .frame(width: 50, height: 50)
                 Text(getFirstLetter(expense.merchant_name))
                     .font(.headline)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(.primary)
             }
             
             VStack(alignment: .leading, spacing: 5) {
                 Text(expense.merchant_name)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(.primary)
                     .font(.headline)
                 HStack {
                     Text("Category:")
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                     Text(expense.category_name)
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .underline()
                 }
             }
             Spacer()
             Text("£ \(Int(expense.total_amount_paid))")
                 .font(.headline)
-                .foregroundColor(.black)
+                .foregroundStyle(.primary)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 10)
-        .background(Color.white)
+        .background(scheme == .light ? .white : .gray.opacity(0.25))
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }

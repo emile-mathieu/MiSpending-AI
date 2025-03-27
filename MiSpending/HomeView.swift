@@ -82,7 +82,7 @@ struct PopButton: View {
         } label: {
             Image(systemName: isPopButtonOpen ? "xmark" : "plus")
                 .font(.title2)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .frame(width: 50, height: 50)
                 .background(Circle().fill(isPopButtonOpen ? Color.red : Color.gray))
                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
@@ -101,7 +101,7 @@ struct CameraButtonView: View {
         } label: {
             Image(systemName: "barcode.viewfinder")
                 .font(.title2)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .frame(width: 50, height: 50)
                 .background(Circle().fill(Color.blue))
                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
@@ -123,7 +123,7 @@ struct AddExpenseButtonView: View {
         }) {
             Image(systemName: "pencil.and.list.clipboard")
                 .font(.title2)
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .frame(width: 50, height: 50)
                 .background(Circle().fill(Color.green))
                 .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)

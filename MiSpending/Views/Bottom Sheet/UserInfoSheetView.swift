@@ -53,7 +53,7 @@ struct UserInfoSheetView: View {
                             .submitLabel(.next)
                             .padding()
                             .background(Color(.secondarySystemBackground))
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                     
                     VStack(alignment: .leading) {
@@ -63,7 +63,7 @@ struct UserInfoSheetView: View {
                         CustomNumberPadTextField(value: $budget, placeholder: "Amount e.g., 500")
                             .padding()
                             .background(Color(.secondarySystemBackground))
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                     
                     VStack(alignment: .leading) {
@@ -78,7 +78,7 @@ struct UserInfoSheetView: View {
                         .padding()
                         .tint(.primary)
                         .background(Color(.secondarySystemBackground))
-                        .cornerRadius(8)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                 }
                 GeometryReader { geometry in

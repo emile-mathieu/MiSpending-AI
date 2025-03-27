@@ -75,7 +75,7 @@ struct ExpenseSaveView: View {
                             isInputActive = false
                         }) {
                             Image(systemName: "keyboard.chevron.compact.down")
-                                .foregroundStyle(.black)
+                                .foregroundStyle(.primary)
                         }
                     }
                 }
@@ -97,7 +97,7 @@ struct ExpenseSaveView: View {
         }) {
             Text("Save")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(RoundedRectangle(cornerRadius: 12).fill(.green))
@@ -109,7 +109,7 @@ struct ExpenseSaveView: View {
         }) {
             Text("Cancel")
                 .font(.system(size: 14, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(RoundedRectangle(cornerRadius: 12).fill(.red))
