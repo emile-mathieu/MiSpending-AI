@@ -14,6 +14,7 @@ import AVFoundation
 /// Reference: https://developer.apple.com/documentation/avfoundation/avcapturesession
 struct CameraView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var scheme
     
     @Binding var isSheetPresented: Bool
     
@@ -62,7 +63,7 @@ struct CameraView: View {
                                 Image(systemName: "photo.on.rectangle.angled.fill")
                                     .resizable()
                                     .frame(width: 30, height: 30)
-                                    .foregroundStyle(.black)
+                                    .foregroundStyle(.primary)
                             }
                         }
                         .padding(.leading, 20)
@@ -91,7 +92,7 @@ struct CameraView: View {
                             Image(systemName: "camera.circle.fill")
                                 .resizable()
                                 .frame(width: 70, height: 70)
-                                .foregroundColor(.black)
+                                .foregroundStyle(.primary)
                         }
                         Spacer()
                         Color.clear.frame(width: 70, height: 1)
@@ -120,13 +121,12 @@ struct CameraView: View {
             .onDisappear {
                 viewModel.stopSession()
             }
-            .background(Color.white)
             .toolbar{
                 ToolbarItem(placement: .topBarLeading){
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark.circle.fill")
                             .resizable()
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                             .font(.system(size: 20))
                     }
                 }
