@@ -58,7 +58,7 @@ struct ExpenseCameraView: View {
                         dismiss()
                     }
                     let responseData = try? await fetchData(readOCr)
-                    temporaryName = responseData?.category_name ?? ""
+                    temporaryName = responseData?.merchant_name ?? ""
                     temporaryCategoryType = responseData?.category_name ?? ""
                     temporaryCurrency = responseData?.currency ?? ""
                     temporaryAmount = responseData?.total_amount_paid ?? 0.0
@@ -138,7 +138,7 @@ struct ExpenseCameraView: View {
                 dismiss()
             }) {
                 Image(systemName: "chevron.left")
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.primary)
                     .fontWeight(.bold)
             }
         }
