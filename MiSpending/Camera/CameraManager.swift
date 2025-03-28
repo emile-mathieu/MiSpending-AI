@@ -18,7 +18,7 @@ class CameraManager: NSObject {
     private var videoOutput: AVCaptureVideoDataOutput?
     private let systemPreferredCamera = AVCaptureDevice.default(for: .video)
     private var sessionQueue = DispatchQueue(label: "video.preview.session")
-    
+    private var isConfigured = false
     // Asynchronously check for camera authorization.
     private var isAuthorized: Bool {
         get async {
@@ -45,10 +45,6 @@ class CameraManager: NSObject {
     
     override init() {
         super.init()
-        Task {
-            await configureSession()
-            await startSession()
-        }
     }
     
     func stopSession() {
@@ -57,6 +53,12 @@ class CameraManager: NSObject {
                 self.captureSession.stopRunning()
             }
         }
+    }
+    
+    func initializeCameraIfNeeded() async {
+        guard !isConfigured else { return }
+        await configureSession()
+        isConfigured = true
     }
     
     private func configureSession() async {

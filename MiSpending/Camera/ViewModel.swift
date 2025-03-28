@@ -36,6 +36,7 @@ final class ViewModel: ObservableObject {
     }
     func restartSession() {
         Task {
+            await cameraManager.initializeCameraIfNeeded()
             await cameraManager.startSession()
         }
     }
