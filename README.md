@@ -9,7 +9,7 @@ MiSpending, a simple finance IOS App to track and analyze your spendings with Ma
 ## Technologies
 - Swift + SwiftUI (IOS 17.5+)
 - SwiftData
-- Apple  authentication
+- Apple  authentication (to implement)
 - CoreML - Custom CoreML Receipt Image Classification
 - VisionKit - OCR (Optical character recognition)
 - Natural Language Processing (OpenAI)
