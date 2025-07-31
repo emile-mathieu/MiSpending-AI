@@ -1,5 +1,6 @@
 # MiSpending
-MiSpending, a simple finance IOS App to track and analyze your spendings with Machine Leaning and Computer Vision.
+MiSpending, a simple finance IOS App to track and analyze your spendings with Machine Leaning and Computer Vision. 
+This app is part of my Computer Science Final Year Honours Project.
 ## Table of Contents
 
 - [Technologies](#technologies)
