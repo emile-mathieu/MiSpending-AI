@@ -19,13 +19,13 @@ This app is part of my Computer Science Final Year Honours Project.
 
 © **2025 Emile Mathieu**. All rights reserved.
 
-MiSpending is a private project. The **source code, trained model and any associated artifacts** is provided for research and inspirational purposes only. You are free to use the project for learning, inspiration, or academic research. Commercial use or redistribution of the code, trained model and associated artifacts without express permission is **prohibited**.
+The **source code, trained model and any associated artifacts** are provided for research and inspirational purposes only. You are free to use the project for learning, inspiration, or academic research. Commercial use or redistribution of the code, trained model and associated artifacts without express permission is **prohibited**.
 
 ⚠️ Dataset notice: The model was trained on the SROIE dataset (ICDAR 2019), which is released strictly for research purposes.
 - In compliance with the dataset’s license, the trained model is not distributed in the active repository state.
 - Earlier commits may have contained a trained model file, but this has since been removed to respect the dataset’s licensing terms.
 
-The project is provided "as is", **without warranty of any kind**. For any inquiries or permission requests beyond academic or research use, please contact me.
+The project is provided "as is", **without warranty of any kind**.
 
 For inquiries regarding licensing or permissions, please contact me.
 ## References
