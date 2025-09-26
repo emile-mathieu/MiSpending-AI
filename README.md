@@ -22,7 +22,7 @@ This app is part of my Computer Science Final Year Honours Project.
 The **source code, trained model and any associated artifacts** are provided for research and inspirational purposes only. You are free to use the project for learning, inspiration, or academic research. Commercial use or redistribution of the code, trained model and associated artifacts without express permission is **prohibited**.
 
 ⚠️ Dataset notice: The model was trained on the SROIE dataset (ICDAR 2019), which is released strictly for research purposes.
-- In compliance with the dataset’s license, the trained model is not distributed in the active repository state.
+- In compliance with the dataset’s license, the trained model is not distributed in the current state of this repository.
 - Earlier commits may have contained a trained model file, but this has since been removed to respect the dataset’s licensing terms.
 
 The project is provided "as is", **without warranty of any kind**.
