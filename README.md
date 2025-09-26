@@ -15,9 +15,9 @@ This app is part of my Computer Science Final Year Honours Project.
 - VisionKit - OCR (Optical character recognition)
 - Natural Language Processing (OpenAI)
 
-## License
+## Permissions & Restrictions
 
-© [2025] [Emile Mathieu]. All rights reserved.
+© **2025 Emile Mathieu**. All rights reserved.
 
 MiSpending is a private project. The source code is provided for research and inspirational purposes only. You are free to use the project for learning, inspiration, or academic research. Commercial use or redistribution of the code without express permission is **prohibited**.
 
