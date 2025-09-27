@@ -4,7 +4,7 @@ This app is part of my Computer Science Final Year Honours Project.
 ## Table of Contents
 
 - [Technologies](#technologies)
-- [Permissions & Restrictions](#permissions & restrictions)
+- [Permissions & Restrictions](#permissions--restrictions)
 - [References](#references)
 
 ## Technologies
